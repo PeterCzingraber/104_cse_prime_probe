@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>104_cse_experiment</title>
+        <script src="jspsych/dist/jspsych.js"></script>
+        <script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+        <script src="jspsych/dist/plugin-html-button-response.js"></script>
+        <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
+    </head>
+    <body></body>
+    <script>
+        var jsPsych = initJsPsych();
+        var timeline = [];
+        /*defining welcome message*/
+        var welcome = {
+            type: jsPsychHtmlButtonResponse,
+            stimulus: `<h2>Üdvözlünk a Metatudomány kutatócsoport vizsgálatában!</h2>
+                <p>Egy tudományos kutatásban veszel részt, amelynek vezetője Bognár Miklós, az ELTE Affektív Pszichológia Tanszékének kutatója. A kutatás célja megvizsgálni, hogy miként hatnak a büntetés által kiváltott negatív motivációs álapotok a kognitív kontrollra.</p>
+                <h3>Részvétel</h3>
+                <p>A kutatásban való részvétel teljesen önkéntes. A vizsgálatot bármikor indoklás nélkül megszakíthatod.</p>
+                <p>Ha bármilyen kérdésed, észrevételed vagy problémád van a kutatással kapcsolatban, írj Bognár Miklósnak a <a href="mailto:bognar.miklos@ppk.elte.hu">bognar.miklos@ppk.elte.hu</a> címre.</p>`,
+            choices: ['Tovább']
+        };
+        timeline.push(welcome);
+        jsPsych.run(timeline);
+    </script>
+</html>
