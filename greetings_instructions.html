@@ -15,13 +15,81 @@
         var welcome = {
             type: jsPsychHtmlButtonResponse,
             stimulus: `<h2>Üdvözlünk a Metatudomány kutatócsoport vizsgálatában!</h2>
-                <p>Egy tudományos kutatásban veszel részt, amelynek vezetője Bognár Miklós, az ELTE Affektív Pszichológia Tanszékének kutatója. A kutatás célja megvizsgálni, hogy miként hatnak a büntetés által kiváltott negatív motivációs álapotok a kognitív kontrollra.</p>
+                <p>Egy tudományos kutatásban veszel részt, amelynek vezetője Bognár Miklós, az ELTE Affektív Pszichológia Tanszékének kutatója. 
+                A kutatás célja megvizsgálni, hogy miként hatnak a büntetés által kiváltott negatív motivációs állapotok a kognitív kontrollra.</p>
                 <h3>Részvétel</h3>
                 <p>A kutatásban való részvétel teljesen önkéntes. A vizsgálatot bármikor indoklás nélkül megszakíthatod.</p>
                 <p>Ha bármilyen kérdésed, észrevételed vagy problémád van a kutatással kapcsolatban, írj Bognár Miklósnak a <a href="mailto:bognar.miklos@ppk.elte.hu">bognar.miklos@ppk.elte.hu</a> címre.</p>`,
             choices: ['Tovább']
         };
         timeline.push(welcome);
+        /*data handling and informed consent*/
+        var data_handling = {
+            type: jsPsychHtmlButtonResponse,
+            stimulus: `<h2>Adatkezelési tájékoztató</h2>
+                <p>Szigorúan bizalmasan kezelünk minden olyan személyes információt, amit a kutatás keretén belül gyűjtünk össze. 
+                    A kutatás során nyert adatokat kóddal ellátva biztonságos számítógépeken tároljuk. A kutatás során nyert adatokat összegezzük. 
+                    Az ELTE PPK Affektív Pszichológia Tanszék Metatudomány Kutatócsoportja, mint adatkezelő, fenti személyes adataidat bizalmasan kezeli, más adatkezelőnek, adatfeldolgozónak nem adja át.
+                    E tényállás részleteit a <a href="http://metasciencelab.elte.hu/hozzajarulas-adatkezeleshez/" target=_blank">"Hozzájárulás adatkezeléshez"</a> c. dokumentum tartalmazza.</p>
+
+                <p>Az adatkezelésről szóló szabályzásról részletesebben pedig itt tájékozódhatsz:
+                        <a href="https://ppk.elte.hu/file/Hozzajarulas_adatkezeleshez_melleklet_2018.pdf" target="_blank">Hozzájárulás adatkezeléshez melléklet</a></p>
+                <p>A kutatás során nyert személyes adataidat arra használjuk fel, hogy regisztrálhassuk a részvételért járó kurzuspontokat és a pénzjutalmat. 
+                Az azonosítására alkalmas adatokat (NEPTUN kód) ezután törölni fogjuk. A kezelt adatok a következők:</p>
+
+                        <ul>
+                            <li>NEPTUN-kód</li>
+                            <li>Életkor</li>
+                            <li>Nem</li>
+                            <li>Iskolai végzettség</li>
+                        </ul>
+                <p>Válaszaid nem lesznek semmilyen módon hozzád köthetők. Az anonimizált adataidat más kutatókkal megosztjuk.</p>
+                <p><strong>Kérlek, amennyiben egyetértesz a fenti feltételekkel, és hozzájárulsz a kutatásban való részvételhez, kattints az "Igen" gombra.</strong></p>`,
+            choices: ['Igen']
+                        };
+        timeline.push(data_handling);
+        /*informed consent*/
+        var informed_consent = {
+            type:jsPsychHtmlButtonResponse,
+            stimulus: `<h2>Beleegyező nyilatkozat</h2>
+                <p>Felelősségem teljes tudatában kijelentem, hogy a mai napon az Eötvös Loránd Tudományegyetem, Bognár Miklós kutatásvezető által végzett vizsgálatban</p>
+                 <ul>
+                    <li>önként veszek részt.</li>
+                    <li>a vizsgálat jellegéről, annak megkezdése előtt kielégítő tájékoztatást kaptam.</li>
+                    <li>nem szenvedek semmilyen pszichiátriai betegségben.</li>
+                    <li>a vizsgálat idején alkohol vagy drogok hatása alatt nem állok.</li>
+                 </ul>
+
+                <p>Tudomásul veszem, hogy az azonosításomra alkalmas személyi adataimat bizalmasan kezelik.
+                    Hozzájárulok ahhoz, hogy a vizsgálat során a rólam felvett, személyem azonosítására nem alkalmas adatok más kutatók számára is hozzáférhetők legyenek.
+                    Fenntartom a jogot arra, hogy a vizsgálat során annak folytatásától bármikor elállhassak. 
+                    Ilyen esetben a rólam addig felvett adatokat törölni kell.</p>
+
+                <p>Tudomásul veszem, hogy csak a teljesen befejezett kitöltésért kapok pontot és pénzjutalmat a <em>Pszichológiai kísérletben és tudományos aktivitásban való részvétel</em> nevű kurzuson.</p>
+
+                <p><strong>A kutatásban való részvételem körülményeiről részletes tájékoztatást kaptam, a feltételekkel egyetértek.</strong></p>
+                <p><strong>Amennyiben egyetértesz a fenti feltételekkel, kattints az "Igen" gombra.</strong></p>`,
+            choices: ['Igen']
+                        };
+        timeline.push(informed_consent);
+        /*instructions*/
+        var instructions = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: `<h2>Instrukciók</h2>
+                <p>Ebben a kísérletben arra vagyunk kíváncsiak, hogy miként befolyásolja a büntetés a konfliktusfeldolgozást. 
+                A kísérlet során iránymegjelöléseket fogsz olvasni (FEL, LE, JOBB, BAL). Először egy prime inger fog megjelenni a képernyőn, amin egy irány (pl.: „FEL”) lesz olvasható egymás alatt háromszor. 
+                Ezt követően megjelenik a célinger, ami vagy azonos („FEL”) vagy ellentétes („LE”) lesz az előtte bemutatott iránnyal.
+                A feladatod az lesz, hogy minél gyorsabban és pontosabban eltaláld a célinger irányát a hozzárendelt billentyű megnyomásával.</p>
+                <p>Fontos, hogy a lehető leggyorsabban reagálj, de közben figyelj a pontosságra is!</p> 
+                <p>Kérlek helyezd a billenytűzetre a kezedet a képen látható módon:</p>
+                <p>A bal középső ujjad az „f”-re, a mutató ujjad a „g”-re, míg a jobb mutató ujjad a „n”-re, a középső ujjad pedig a „j”-re!</p>
+                <img src="Experimental material/instruction_pic.png" alt="Hand placemante instructions" style="width: 40%; height: 40%;">
+                <p><em>Amennyiben készen állsz a kísérlet megkezdésére, nyomj meg egy tetszőleges billentyűt!</em></p>
+                
+`,
+            choices: "ALL_KEYS"
+        };
+        timeline.push(instructions);
         jsPsych.run(timeline);
     </script>
 </html>
