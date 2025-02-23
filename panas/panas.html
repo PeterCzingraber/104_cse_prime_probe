@@ -10,11 +10,11 @@
   <script>
 
     var likert_scale = [
-  "Egyáltalán nem, vagy alig",
-  "Kicsit", 
-  "Mérsékelten", 
-  "Eléggé", 
-  "Nagyon"
+  "egyáltalán nem, vagy alig",
+  "kicsit", 
+  "mérsékelten", 
+  "eléggé", 
+  "nagyon"
 ];
 var trial = {
   type: jsPsychSurveyLikert,
@@ -22,6 +22,23 @@ var trial = {
     {prompt: "érdeklődő", name: 'érdeklődés', labels: likert_scale},
     {prompt: "kiborult, magamon kívül vagyok", name: 'kiborulás', labels: likert_scale},
     {prompt: "izgatott, feldobott", name: 'izgalom', labels: likert_scale},
+    {prompt: "zaklatott, feldúlt", name: 'zaklatottság', labels: likert_scale},
+    {prompt: "erős", name: 'erő', labels: likert_scale},
+    {prompt: "bűntudatom van", name: 'bűntudat', labels: likert_scale},
+    {prompt: "rémült", name: 'rémület', labels: likert_scale},
+    {prompt: "ellenséges", name: 'ellenségesség', labels: likert_scale},
+    {prompt: "lelkes", name: 'lelkesség', labels: likert_scale},
+    {prompt: "büszke", name: 'büszkeség', labels: likert_scale},
+    {prompt: "ingerlékeny", name: 'ingerlékenység', labels: likert_scale},
+    {prompt: "éber", name: 'éberség', labels: likert_scale},
+    {prompt: "megszégyenült", name: 'szégyen', labels: likert_scale},
+    {prompt: "elhivatott", name: 'elhivatottság', labels: likert_scale},
+    {prompt: "ideges", name: 'idegesség', labels: likert_scale},
+    {prompt: "elszánt, határozott", name: 'elszántság', labels: likert_scale},
+    {prompt: "figyelmes", name: 'figyelem', labels: likert_scale},
+    {prompt: "feszült", name: 'feszültség', labels: likert_scale},
+    {prompt: "aktív, élénk", name: 'élénkség', labels: likert_scale},
+    {prompt: "félénk", name: 'félelem', labels: likert_scale},
   ],
 };
 
