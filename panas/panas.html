@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pozitív és Negatív Affektivitás Skála (PANAS)</title>
+    <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/plugin-survey-likert.js"></script>
+    <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body></body>
+  <script>
+
+    var likert_scale = [
+  "Egyáltalán nem, vagy alig",
+  "Kicsit", 
+  "Mérsékelten", 
+  "Eléggé", 
+  "Nagyon"
+];
+var trial = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "érdeklődő", name: 'érdeklődés', labels: likert_scale},
+    {prompt: "kiborult, magamon kívül vagyok", name: 'kiborulás', labels: likert_scale},
+    {prompt: "izgatott, feldobott", name: 'izgalom', labels: likert_scale},
+  ],
+};
+
+var jsPsych = initJsPsych({
+    timeline: timeline,
+    on_finish: function(){
+        jsPsych.data.displayData();
+    }
+});
+
+var timeline = [trial];
+
+jsPsych.run(timeline);
+
+  </script>
+</html>
