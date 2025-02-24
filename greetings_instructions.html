@@ -5,10 +5,32 @@
         <script src="jspsych/dist/jspsych.js"></script>
         <script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
         <script src="jspsych/dist/plugin-html-button-response.js"></script>
+        <script src="jspsych/dist/plugin-survey-likert.js"></script>
+        <script src="https://unpkg.com/@jspsych-contrib/plugin-html-vas-response@1.2.0"></script>
         <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
     </head>
     <body></body>
     <script>
+        ///optional sytling///
+        var styles = `
+        p{
+            text-align: center;
+        }
+    `
+        var styleSheet = document.createElement("style")
+        styleSheet.type = "text/css"
+        styleSheet.innerText = styles
+        document.head.appendChild(styleSheet)
+        ///////////////////////
+
+        ///Necessary functions/// --> call back function when the experiment is finished
+        ///var jspsych = initJsPsych({
+        /// experiment_width: 1000,
+        /// on_finish: function(){
+        ///    window.location = "ide_majd_valami"
+        //    }
+        //});
+
         var jsPsych = initJsPsych();
         var timeline = [];
         /*defining welcome message*/
@@ -84,9 +106,7 @@
                 <p>Kérlek helyezd a billenytűzetre a kezedet a képen látható módon:</p>
                 <p>A bal középső ujjad az „f”-re, a mutató ujjad a „g”-re, míg a jobb mutató ujjad a „n”-re, a középső ujjad pedig a „j”-re!</p>
                 <img src="Experimental material/instruction_pic.png" alt="Hand placemante instructions" style="width: 40%; height: 40%;">
-                <p><em>Amennyiben készen állsz a kísérlet megkezdésére, nyomj meg egy tetszőleges billentyűt!</em></p>
-                
-`,
+                <p><em>Amennyiben készen állsz a kísérlet megkezdésére, nyomj meg egy tetszőleges billentyűt!</em></p>`,
             choices: "ALL_KEYS"
         };
         timeline.push(instructions);
