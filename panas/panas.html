@@ -4,54 +4,60 @@
     <title>Pozitív és Negatív Affektivitás Skála (PANAS)</title>
     <script src="jspsych/jspsych.js"></script>
     <script src="jspsych/plugin-survey-likert.js"></script>
+    <script src="jspsych/plugin-html-button-response.js"></script>
     <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
   </head>
   <body></body>
   <script>
-
     var likert_scale = [
-  "egyáltalán nem, vagy alig",
-  "kicsit", 
-  "mérsékelten", 
-  "eléggé", 
-  "nagyon"
-];
-var trial = {
-  type: jsPsychSurveyLikert,
-  questions: [
-    {prompt: "érdeklődő", name: 'érdeklődés', labels: likert_scale},
-    {prompt: "kiborult, magamon kívül vagyok", name: 'kiborulás', labels: likert_scale},
-    {prompt: "izgatott, feldobott", name: 'izgalom', labels: likert_scale},
-    {prompt: "zaklatott, feldúlt", name: 'zaklatottság', labels: likert_scale},
-    {prompt: "erős", name: 'erő', labels: likert_scale},
-    {prompt: "bűntudatom van", name: 'bűntudat', labels: likert_scale},
-    {prompt: "rémült", name: 'rémület', labels: likert_scale},
-    {prompt: "ellenséges", name: 'ellenségesség', labels: likert_scale},
-    {prompt: "lelkes", name: 'lelkesség', labels: likert_scale},
-    {prompt: "büszke", name: 'büszkeség', labels: likert_scale},
-    {prompt: "ingerlékeny", name: 'ingerlékenység', labels: likert_scale},
-    {prompt: "éber", name: 'éberség', labels: likert_scale},
-    {prompt: "megszégyenült", name: 'szégyen', labels: likert_scale},
-    {prompt: "elhivatott", name: 'elhivatottság', labels: likert_scale},
-    {prompt: "ideges", name: 'idegesség', labels: likert_scale},
-    {prompt: "elszánt, határozott", name: 'elszántság', labels: likert_scale},
-    {prompt: "figyelmes", name: 'figyelem', labels: likert_scale},
-    {prompt: "feszült", name: 'feszültség', labels: likert_scale},
-    {prompt: "aktív, élénk", name: 'élénkség', labels: likert_scale},
-    {prompt: "félénk", name: 'félelem', labels: likert_scale},
-  ],
-};
+      "egyáltalán nem, vagy alig",
+      "kicsit", 
+      "mérsékelten", 
+      "eléggé", 
+      "nagyon"
+    ];
 
-var jsPsych = initJsPsych({
-    timeline: timeline,
-    on_finish: function(){
+    var questions = [
+      {prompt: "érdeklődő", name: 'érdeklődés', labels: likert_scale},
+      {prompt: "kiborult, magamon kívül vagyok", name: 'kiborulás', labels: likert_scale},
+      {prompt: "izgatott, feldobott", name: 'izgalom', labels: likert_scale},
+      {prompt: "zaklatott, feldúlt", name: 'zaklatottság', labels: likert_scale},
+      {prompt: "erős", name: 'erő', labels: likert_scale},
+      {prompt: "bűntudatom van", name: 'bűntudat', labels: likert_scale},
+      {prompt: "rémült", name: 'rémület', labels: likert_scale},
+      {prompt: "ellenséges", name: 'ellenségesség', labels: likert_scale},
+      {prompt: "lelkes", name: 'lelkesség', labels: likert_scale},
+      {prompt: "büszke", name: 'büszkeség', labels: likert_scale},
+      {prompt: "ingerlékeny", name: 'ingerlékenység', labels: likert_scale},
+      {prompt: "éber", name: 'éberség', labels: likert_scale},
+      {prompt: "megszégyenült", name: 'szégyen', labels: likert_scale},
+      {prompt: "elhivatott", name: 'elhivatottság', labels: likert_scale},
+      {prompt: "ideges", name: 'idegesség', labels: likert_scale},
+      {prompt: "elszánt, határozott", name: 'elszántság', labels: likert_scale},
+      {prompt: "figyelmes", name: 'figyelem', labels: likert_scale},
+      {prompt: "feszült", name: 'feszültség', labels: likert_scale},
+      {prompt: "aktív, élénk", name: 'élénkség', labels: likert_scale},
+      {prompt: "félénk", name: 'félelem', labels: likert_scale},
+    ];
+
+    var timeline = [];
+
+    questions.forEach(function(question, index) {
+      var trial = {
+        type: jsPsychSurveyLikert,
+        questions: [question],
+        required: true
+      };
+      timeline.push(trial);
+    });
+
+    var jsPsych = initJsPsych({
+      timeline: timeline,
+      on_finish: function(){
         jsPsych.data.displayData();
-    }
-});
+      }
+    });
 
-var timeline = [trial];
-
-jsPsych.run(timeline);
-
+    jsPsych.run(timeline);
   </script>
 </html>
