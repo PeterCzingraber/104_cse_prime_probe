@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prime probe probal megolni</title>
+    <script src="jspsych/dist/jspsych.js"></script>
+    <script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych/dist/plugin-html-button-response.js"></script>
+    <script src="jspsych/dist/plugin-fullscreen.js"></script>
+    <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const jsPsych = initJsPsych();
+        var timeline = [];
+        /* Meg kell beszélnünk milyen id legyen */
+        var subject_id = jsPsych.randomization.randomID(7);
+        jsPsych.data.addProperties({subject: subject_id})
+
+
+        const instructions = {
+            type: jsPsychHtmlButtonResponse,
+            stimulus: "",
+            choices: ['Tovább'],
+        }
+        timeline.push(instructions);
+
+        timeline.push({
+        type: jsPsychFullscreen,
+        fullscreen_mode: true
+        });
+       
+        /* A fixációs kereszt 400-600ms-ig tart, átlagból randomizált módon, nem tudom hogy kell*/
+        const fixation = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: '<div style="font-size:60px;">+</div>',
+            choices: "NO_KEYS",
+            trial_duration: function() {
+            return Math.random() * (600 - 400) + 400;
+    /*var rand_dur = jsPsych.randomization.sampleWithoutReplacement([400,600,],1)[0];
+    return rand_dur;
+    return Math.floor(Math.random() * (600 - 400 + 1)) + 400;*/
+        }
+        }
+        timeline.push(fixation);
+        jsPsych.run(timeline);
+
+        const prime_probe_stimuli = [
+            { 'prime': 'fel', 'probe':'fel', correct_response: 'j' },
+            { 'prime': 'fel', 'probe':'le', correct_response: 'n' },
+            { 'prime': 'le', 'probe':'le', correct_response: 'n' },
+            { 'prime': 'le', 'probe':'fel', correct_response: 'j' },
+            { 'prime': 'jobb', 'probe':'jobb', correct_response: 'g' },
+            { 'prime': 'jobb', 'probe':'bal', correct_response: 'f' },
+            { 'prime': 'bal', 'probe':'bal', correct_response: 'f' },
+            { 'prime': 'bal', 'probe':'jobb', correct_response: 'g' },
+            ]
+            /* hova tegyem? */
+        randomize_order = true
+
+        const prime_trial = {
+            type:jsPsychHtmlKeyboardResponse,
+            stimulus: function() {
+                var primeWord = jsPsych.timelineVariable('prime');
+                return `<div style="font-size: 35px; line-height: 1.5; text-align: center;">
+                    ${primeWord}<br>${primeWord}<br>${primeWord}
+                </div>`;
+            },
+            choices: "NO_KEYS",
+            trial_duration: 133
+
+            }
+        const blank = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: ' ',
+            choices: "NO_KEYS",
+            trial_duration: 33
+            }
+
+        const probe_trial = {
+            type: jsPsychHtmlKeyboardResponse,
+            /* Itt valahol elvesztem, és chatgpt se tud mit kezdeni vele*/            
+            stimulus: function() {
+                var probeObj = jsPsych.timelineVariable('probe');
+                var probeWord = probeObj.probe;
+                return `<div style="font-size: 35px; line-height: 1.5; text-align: center;">
+                    ${probeWord}
+                </div>`},
+            choices: ["f", "j", "g", "n"],
+            stimulus_duration: 133,
+            trial_duration: 1133,
+            
+            /*data: {correct_response: jsPsych.timelineVariable('correct_response')},*/
+            /* Ő csinál valamit?*/
+            /*on_finish: function(data) {
+        data.correct = data.response === jsPsych.timelineVariable('correct_response');
+      }*/
+            }
+
+        /* P-FB-C, only feedback on congruent*/
+        const feedback_01 = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: function() {
+                /* itt még defineolnom kell hogy mi a helyes válasz */
+                var last_trial_correct = jsPsych.data.get().last(1).values()[0].correct;
+                if (last_trial_correct) {
+                    return '<div style="font-size: 35px; color: black;">✔</div>';
+                } else {
+                    return '<div style="font-size: 35px; color: black;">✘<br>5 Ft-ot veszítettél</div>';
+                }
+            },
+
+            choices: "NO_KEYS",
+            trial_duration: 700}
+        /* P-FB-I, only feedback on incongruent, and if incorrect monetary loss, 5 Ft-ot veszítettél*/
+        const feedback_02 = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: function() {
+                var last_trial_correct = jsPsych.data.get().last(1).values()[0].correct;
+                if (last_trial_correct) {
+                    return '<div style="font-size: 35px; color: black;">✔</div>';
+                } else {
+                    return '<div style="font-size: 35px; color: black;">✘<br>5 Ft-ot veszítettél</div>';
+                }
+            },
+            choices: "NO_KEYS",
+            trial_duration: 700}
+        /* N-FB-C, */
+        const feedback_03 = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: function() {
+                var last_trial_correct = jsPsych.data.get().last(1).values()[0].correct;
+                if (last_trial_correct) {
+                    return '<div style="font-size: 35px; color: black;">✔</div>';
+                } else {
+                    return '<div style="font-size: 35px; color: black;">✘<br>5 Ft-ot veszítettél</div>';}
+                },
+            choices: "NO_KEYS",
+            trial_duration: 700}
+
+            /* N-FB-I */
+        const feedback_04 = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: function() {
+                var last_trial_correct = jsPsych.data.get().last(1).values()[0].correct;
+                if (last_trial_correct) {
+                    return '<div style="font-size: 35px; color: black;">✔</div>';
+                } else {
+                    return '<div style="font-size: 35px; color: black;">✘<br>5 Ft-ot veszítettél</div>';
+                }
+            },
+            choices: "NO_KEYS",
+            trial_duration: 700}
+            /* P-NFB*/
+        const feedback_05 = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: function() {
+                var last_trial_correct = jsPsych.data.get().last(1).values()[0].correct;
+                if (last_trial_correct) {
+                    return '<div style="font-size: 35px; color: black;">✔</div>';
+                } else {
+                    return '<div style="font-size: 35px; color: black;">✘<br>5 Ft-ot veszítettél</div>';
+                }
+            },
+            choices: "NO_KEYS",
+            trial_duration: 700}
+
+        const session = {timeline: []}
+
+const prime_probe_sequence_01 = {
+    timeline: [
+    fixation,prime_trial, blank, probe_trial, feedback_01],
+    timeline_variables: prime_probe_stimuli,}
+ const block_01 = {timeline: [prime_probe_sequence_01],
+    repetitions: 4}
+
+    const prime_probe_sequence_02 = {
+    timeline: [fixation,prime_trial, blank, probe_trial, feedback_02],
+    timeline_variables: prime_probe_stimuli,}
+    const block_02 = {timeline: [prime_probe_sequence_02],
+    repetitions: 1}
+
+    const prime_probe_sequence_03 = { timeline: [fixation,prime_trial, blank, probe_trial, feedback_03],
+    timeline_variables: prime_probe_stimuli,}
+    const block_03 = {timeline: [prime_probe_sequence_03],
+    repetitions: 1}
+
+    const prime_probe_sequence_04 = { timeline: [fixation,prime_trial, blank, probe_trial, feedback_04],
+    timeline_variables: prime_probe_stimuli,}
+    const block_04 = {timeline: [prime_probe_sequence_04],
+    repetitions: 1}
+
+    const prime_probe_sequence_05 = { timeline: [fixation,prime_trial, blank, probe_trial, feedback_05],
+    timeline_variables: prime_probe_stimuli,}
+    const block_05 = {timeline: [prime_probe_sequence_05],
+    repetitions: 1}
+
+    
+
+    const block_intermission = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: "Vége a blokknak, ha készen állsz kérlek nyomj a Tovább gombra a folytatáshoz.",
+        choices: ['Tovább'],
+    }
+
+    const session_01 = {timeline: [block_01, block_intermission], repetitions: 4}
+    const session_02 = {timeline: [block_02, block_intermission], repetitions: 4}
+    const session_03 = {timeline: [block_03, block_intermission], repetitions: 4}
+    const session_04 = {timeline: [block_04, block_intermission], repetitions: 4}
+    const session_05 = {timeline: [block_05, block_intermission], repetitions: 4}
+    
+    const feedthrough = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: "Most pihenhetsz! A következő részben újabb 400 Ft-ot kapsz. Ha készen állsz nyomd meg a Tovább gombot a folytatáshoz. ",
+        choices: ['Tovább'],
+    }
+
+timeline.push(session_01);
+timeline.push(feedthrough);
+timeline.push(session_02);
+timeline.push(feedthrough);
+timeline.push(session_03);
+timeline.push(feedthrough);
+timeline.push(session_04);
+timeline.push(feedthrough);
+timeline.push(session_05);
+/* vége a kísérletnek */
+timeline.push({
+  type: jsPsychFullscreen,
+  fullscreen_mode: false });
+
+
+/* on_finish: function(data) {if(jsPsych.pluginAPI.comprakeys(data.respone, data.correct_response)) {data.correct = true;} else {data.correct = false;}}, */
+/* hogy lesz egyszerűbb az adatelemzés? */
+/* a dynamic timechanget nem tettem bele*/
+
+
+        </script>
+</body>
+</html>
