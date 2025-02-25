@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Vizuális Analóg Skála</title>
+    <script src="jspsych/jspsych.js"></script>
+    <script src="https://unpkg.com/@jspsych-contrib/plugin-html-vas-response@1.2.0"></script>
+    <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body></body>
+  <script>
+    var vas_trial = {
+      type: jsPsychHtmlVasResponse,
+      stimulus: '<p>mennyire gatya a szitu?</p>',
+      labels: ['we ball', 'fakereszt'],
+      min: 0,
+      max: 100,
+      start: 50,
+      step: 1,
+      slider_width: 600,
+      require_movement: true,
+      button_label: 'Tovább'
+    };
+
+    var timeline = [vas_trial];
+
+    var jsPsych = initJsPsych({
+      timeline: timeline,
+      on_finish: function(){
+        jsPsych.data.displayData();
+      }
+    });
+
+    jsPsych.run(timeline);
+  </script>
+</html>
