@@ -6,6 +6,7 @@
         <script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
         <script src="jspsych/dist/plugin-html-button-response.js"></script>
         <script src="jspsych/dist/plugin-survey-likert.js"></script>
+        <script src="jspsych/dist/plugin-fullscreen.js"></script>
         <script src="https://unpkg.com/@jspsych-contrib/plugin-html-vas-response@1.2.0"></script>
         <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
     </head>
@@ -63,8 +64,8 @@
 
         jsPsych.data.addProperties({subj_code: subj_code}); //adding the subject code to the data object
 
-        var jsPsych = initJsPsych();
         var timeline = [];
+       
         /*defining welcome message*/
         var welcome = {
             type: jsPsychHtmlButtonResponse,
@@ -78,6 +79,16 @@
             choices: ['Tovább']
         };
         timeline.push(welcome);
+
+        //Fullscreen//
+        timeline.push({
+        type: jsPsychFullscreen,
+        fullscreen_mode: true,
+        message: "<p>A kísérlet teljes képernyős módra vált.</p>",
+        button_label: 'Tovább'
+        });
+        ////////
+
         /*data handling and informed consent*/
         var data_handling = {
             type: jsPsychHtmlButtonResponse,
@@ -142,6 +153,114 @@
             choices: "ALL_KEYS"
         };
         timeline.push(instructions);
+
+        //Defining sequence//
+        var sequence_stimuli = [
+        { prime: 'fel', probe: 'le', correct_response: "n", congruent: false },
+        { prime: 'jobb', probe: 'jobb', correct_response: "g", congruent: true },
+        { prime: 'fel', probe: 'fel', correct_response: "j", congruent: true },
+        { prime: 'jobb', probe: 'bal', correct_response: "f", congruent: false },
+        { prime: 'bal', probe: 'jobb', correct_response: "g", congruent: false },
+        { prime: 'bal', probe: 'bal', correct_response: "f", congruent: true },
+        { prime: 'le', probe: 'fel', correct_response: "j", congruent: false },
+        { prime: 'le', probe: 'le', correct_response: "n", congruent: true } 
+        ]
+        //Fixation cross//
+        const fixation = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: '<div style="font-size:60px;">+</div>',
+            choices: "NO_KEYS",
+            trial_duration: function() {
+            return Math.random() * (600 - 400) + 400;}
+        }
+        
+       /*Prime stimuli//
+        //const prime_trial = {
+            //type: jsPsychHtmlKeyboardResponse,
+            
+            //stimulus: function(){
+               // var html = `
+                 //   hellobello${jsPsych.timelineVariable('prime')}<br>
+                   // <p>${jsPsych.timelineVariable('prime')}</p>`;
+                //return html;
+                return jsPsych.timelineVariable('prime')
+            },
+            //'<p style="font-size: 35px; line-height: 1.5; text-align: center;">'+jsPsych.timelineVariable('prime')+'<br>hello<br>hello</p>',//jsPsych.timelineVariable('prime'),//
+            choices: "NO_KEYS",
+            trial_duration: 133
+        }*/
+
+        const prime_trial = { 
+            type: jsPsychHtmlKeyboardResponse, 
+            stimulus: function() { 
+                let trial = jsPsych.randomization.sampleWithoutReplacement(sequence_stimuli, 1)[0]; 
+                return `<div style="text-align: center; font-size: 36px;"> ${trial.prime} <br> ${trial.prime} <br> ${trial.prime} </div>`;
+             }, 
+             choices: "NO_KEYS",
+             trial_duration: 133,
+             data: function() { return jsPsych.randomization.sampleWithoutReplacement(sequence_stimuli, 1)[0]; } };
+
+        //Blank//
+        const blank = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: ' ',
+            choices: "NO_KEYS",
+            trial_duration: 33
+        }
+
+        //Probe//
+        const probe_trial = {
+            type: jsPsychHtmlKeyboardResponse,            
+            stimulus: jsPsych.timelineVariable('probe'),
+            choices: ["f", "j", "g", "n"],
+            stimulus_duration: 133,
+            data: {
+                correct_response: jsPsych.timelineVariable('correct_response')
+            },
+            on_finish: function(data) {
+                data.correct = data.response === data.correct_response;
+            }
+        }
+        //Feedback//
+        /*const feedback = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: function() {
+                var last_trial = jsPsych.data.get().last(1).values()[0];
+                var last_trial_correct = last_trial.correct_response === last_trial.response;
+                if (last_trial_correct) {
+                    return '<div style="font-size: 35px; color: black;">✔</div>';
+                } else {
+                    return '<div style="font-size: 35px; color: black;">✘<br>5 Ft-ot veszítettél</div>';
+                }
+            },
+            choices: "NO_KEYS",
+            trial_duration: 700}*/
+
+        const feedback_congruent = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: function() {
+            var last_trial = jsPsych.data.get().last(1).values()[0];
+            if (last_trial.congruent) {
+                return '<div style="font-size: 35px; color: black;">✔</div>';
+            } else {
+                return '<div style="font-size: 35px; color: black;">✘<br>5 Ft-ot veszítettél</div>';
+            }
+            },
+            choices: "NO_KEYS",
+            trial_duration: 700
+        }
+       
+    
+
+            
+        
+        //összefoglaló változó//
+        const trial_sequence = {
+            timeline: [fixation,prime_trial,blank,probe_trial, feedback_congruent],
+            timeline_variables: sequence_stimuli,
+        }
+
+        timeline.push(trial_sequence);
         jsPsych.run(timeline);
     </script>
 </html>
