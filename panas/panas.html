@@ -9,6 +9,7 @@
   </head>
   <body></body>
   <script>
+
     var likert_scale = [
       "egyáltalán nem, vagy alig",
       "kicsit", 
@@ -18,29 +19,71 @@
     ];
 
     var questions = [
-      {prompt: "érdeklődő", name: 'érdeklődés', labels: likert_scale},
-      {prompt: "kiborult, magamon kívül vagyok", name: 'kiborulás', labels: likert_scale},
-      {prompt: "izgatott, feldobott", name: 'izgalom', labels: likert_scale},
-      {prompt: "zaklatott, feldúlt", name: 'zaklatottság', labels: likert_scale},
-      {prompt: "erős", name: 'erő', labels: likert_scale},
-      {prompt: "bűntudatom van", name: 'bűntudat', labels: likert_scale},
-      {prompt: "rémült", name: 'rémület', labels: likert_scale},
-      {prompt: "ellenséges", name: 'ellenségesség', labels: likert_scale},
-      {prompt: "lelkes", name: 'lelkesség', labels: likert_scale},
-      {prompt: "büszke", name: 'büszkeség', labels: likert_scale},
-      {prompt: "ingerlékeny", name: 'ingerlékenység', labels: likert_scale},
-      {prompt: "éber", name: 'éberség', labels: likert_scale},
-      {prompt: "megszégyenült", name: 'szégyen', labels: likert_scale},
-      {prompt: "elhivatott", name: 'elhivatottság', labels: likert_scale},
-      {prompt: "ideges", name: 'idegesség', labels: likert_scale},
-      {prompt: "elszánt, határozott", name: 'elszántság', labels: likert_scale},
-      {prompt: "figyelmes", name: 'figyelem', labels: likert_scale},
-      {prompt: "feszült", name: 'feszültség', labels: likert_scale},
-      {prompt: "aktív, élénk", name: 'élénkség', labels: likert_scale},
-      {prompt: "félénk", name: 'félelem', labels: likert_scale},
+      {question: 
+        {prompt: "érdeklődő", name: 'érdeklődés'}
+      },
+      {question: 
+        {prompt: "zaklatott, feldúlt", name: 'zaklatottság'}
+      },
+      {question:
+        {prompt: "kiborult, magamon kívül vagyok", name: 'kiborulás'}
+      },
+      {question:
+        {prompt: "izgatott, feldobott", name: 'izgalom'}
+      },
+      {question:
+        {prompt: "erős", name: 'erő'}
+      },
+      {question:
+        {prompt: "bűntudatom van", name: 'bűntudat'}
+      },
+      {question:
+        {prompt: "rémült", name: 'rémület'}
+      },
+      {question:
+        {prompt: "ellenséges", name: 'ellenségesség'}
+      },
+      {question:
+        {prompt: "lelkes", name: 'lelkesség'}
+
+      },
+      {question:
+        {prompt: "büszke", name: 'büszkeség'}
+      },
+      {question:
+        {prompt: "ingerlékeny", name: 'ingerlékenység'}
+      },
+      {question:
+        {prompt: "éber", name: 'éberség'}
+      },
+      {question:
+        {prompt: "megszégyenült", name: 'szégyen'}
+      },
+      {question:
+        {prompt: "elhivatott", name: 'elhivatottság'}
+      },
+      {question:
+        {prompt: "ideges", name: 'idegesség'}
+      },
+      {question:
+        {prompt: "elszánt, határozott", name: 'elszántság'}
+      }, 
+      {question:
+        {prompt: "figyelmes", name: 'figyelem'}
+      },
+      {question:
+        {prompt: "feszült", name: 'feszültség'}
+      },
+      {question:
+        {prompt: "aktív, élénk", name: 'élénkség'}
+      },
+      {question:
+        {prompt: "félénk", name: 'félelem'}
+    }
+    
     ];
 
-    var timeline = [];
+    var panas_timeline = [];
 
     var intro = {
       type: jsPsychHtmlButtonResponse,
@@ -50,16 +93,31 @@
       choices: ['Tovább']
     };
 
-    timeline.push(intro);
 
-    questions.forEach(function(question, index) {
-      var trial = {
+    panas_timeline.push(intro);
+
+    
+    var trial = {
         type: jsPsychSurveyLikert,
-        questions: [question],
-        required: true
+        questions: function(){
+          console.log(jsPsych.timelineVariable('question')['prompt'])
+          question_object = jsPsych.timelineVariable('question')
+          question_object['labels'] = likert_scale
+          question_object['required'] = true
+          myarray = [jsPsych.timelineVariable('question')]
+          return myarray
+        }
       };
-      timeline.push(trial);
-    });
+
+    var procedure = {
+      timeline: [trial],
+      timeline_variables: questions,
+      randomize_order: true
+    }
+    
+    panas_timeline.push(procedure)
+
+  
 
     var jsPsych = initJsPsych({
       timeline: timeline,
@@ -69,5 +127,7 @@
     });
 
     jsPsych.run(timeline);
+
   </script>
 </html>
+
