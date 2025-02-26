@@ -42,6 +42,16 @@
 
     var timeline = [];
 
+    var intro = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: '<p>A következő kifejezések érzéseket, állapotokat írnak le.</p>' +
+                '<p>Kérlek, jelöld be azt a számot, ami a legjobban kifejezi, hogy jelen pillanatban hogyan érzed magad.</p>' +
+                '<p>Nyomd meg a "Tovább" gombot a kezdéshez.</p>',
+      choices: ['Tovább']
+    };
+
+    timeline.push(intro);
+
     questions.forEach(function(question, index) {
       var trial = {
         type: jsPsychSurveyLikert,
