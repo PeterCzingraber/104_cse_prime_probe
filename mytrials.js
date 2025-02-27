@@ -30,14 +30,14 @@ var prime_probe_trials = [
     {
         prime: "bal",
         probe: "jobb",
-        correct_response: "f",
+        correct_response: "g",
         congruency: "incongruent",
         name: "horizontal_incon_1"
     },
     {
         prime: "jobb",
         probe: "bal",
-        correct_response: "g",
+        correct_response: "f",
         congruency: "incongruent",
         name: "horizontal_incon_2"
     },

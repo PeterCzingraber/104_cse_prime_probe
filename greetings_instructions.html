@@ -72,7 +72,10 @@
 
         var timeline = [];
        
-        /*defining welcome message*/
+        var version = jsPsych.randomization.sampleWithoutReplacement([1,2],1)[0]; //Ezzel tudjuk majd váltogatni szerintem a kondíciókat. Majd 5 lesz összesen, szóval, a 2-es helyére 5 jön. 
+        
+        
+        //defining welcome message//
         var welcome = {
             type: jsPsychHtmlButtonResponse,
             stimulus: `
@@ -207,8 +210,7 @@
                 correct_response: jsPsych.timelineVariable('correct_response'),
                 task: "probe",
                 congruency: jsPsych.timelineVariable('congruency'),
-                name: jsPsych.timelineVariable('name'),
-                dog: "cat"
+                name: jsPsych.timelineVariable('name')
             },
             on_finish: function(data) {
                 data.correct = data.response === data.correct_response;
@@ -216,13 +218,34 @@
         }
 
         //Feedback//
+        var money = 400;
+
         var feedback = {
             type: jsPsychHtmlKeyboardResponse,
             stimulus: function() {
-            var feedback_text;
-            var last_trial = jsPsych.data.getLastTrialData().values()[0].correct;
+            var last_trial = jsPsych.data.getLastTrialData().values()[0];
             console.log(last_trial);
-            if (last_trial) {
+            var feedback_text;
+
+            if (last_trial.congruency === "congruent") {
+                if (last_trial.correct) {
+                    feedback_text = "<span style=font-size: 35px; color: black;>✔</span>";
+                } else {
+                    money -= 5;
+                    feedback_text = '<div style="font-size: 35px; color: black;">✘<br>5 Ft-ot veszítettél</div>';
+                }
+                } else {
+                    feedback_text = "<span style='font-size: 35px; color: black;'>⬛</span>";
+                }
+                console.log("MOney left:", money);
+                return feedback_text;
+            },
+            choices: "NO_KEYS",
+            trial_duration: 700
+        };
+
+
+           /* if (last_trial) {
                 feedback_text = "<span style=font-size: 35px; color: black;>✔</span>";
             } else { feedback_text = '<div style="font-size: 35px; color: black;">✘<br>5 Ft-ot veszítettél</div>';
             }
@@ -230,7 +253,7 @@
             },
             choices: "NO_KEYS",
             trial_duration: 700
-        }
+        }*/
        
         var goodbye = {
             type: jsPsychHtmlKeyboardResponse,
