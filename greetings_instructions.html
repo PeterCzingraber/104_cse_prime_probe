@@ -217,10 +217,10 @@
             }
         }
 
-        //Feedback//
+        //Feedback P-FB-C//
         var money = 400;
 
-        var feedback = {
+        var feedback_p_fb_c = {
             type: jsPsychHtmlKeyboardResponse,
             stimulus: function() {
             var last_trial = jsPsych.data.getLastTrialData().values()[0];
@@ -229,15 +229,69 @@
 
             if (last_trial.congruency === "congruent") {
                 if (last_trial.correct) {
-                    feedback_text = "<span style=font-size: 35px; color: black;>✔</span>";
+                    feedback_text = "<div style='font-size: 35px; color: black;'>✔</div>";
                 } else {
                     money -= 5;
                     feedback_text = '<div style="font-size: 35px; color: black;">✘<br>5 Ft-ot veszítettél</div>';
                 }
                 } else {
-                    feedback_text = "<span style='font-size: 35px; color: black;'>⬛</span>";
+                    feedback_text = "<div style='font-size: 35px; color: black; font-weight: bold;'>&#11036</div>";
                 }
-                console.log("MOney left:", money);
+                console.log("Money left:", money);
+                return feedback_text;
+            },
+            choices: "NO_KEYS",
+            trial_duration: 700
+        };
+
+// Feedback P-FB-I//
+        var money = 400;
+
+var feedback_p_fb_i = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: function() {
+    var last_trial = jsPsych.data.getLastTrialData().values()[0];
+    console.log(last_trial);
+    var feedback_text;
+
+    if (last_trial.congruency === "incongruent") {
+        if (last_trial.correct) {
+            feedback_text = "<div style='font-size: 35px; color: black;'>✔</div>";
+        } else {
+            money -= 5;
+            feedback_text = "<div style='font-size: 35px; color: black;'>✘<br>5 Ft-ot veszítettél</div>";
+        }
+        } else {
+            feedback_text = "<div style='font-size: 35px; color: black; font-weight: bold;'>&#11036</div>";
+        }
+        console.log("Money left:", money);
+        return feedback_text;
+    },
+    choices: "NO_KEYS",
+    trial_duration: 700
+};
+
+        //Feedback N-FB-C//
+        var money = 400;
+
+        var feedback_n_fb_c = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: function() {
+            var last_trial = jsPsych.data.getLastTrialData().values()[0];
+            console.log(last_trial);
+            var feedback_text;
+
+            if (last_trial.congruency === "congruent") {
+                if (last_trial.correct) {
+                    feedback_text = "<div style='font-size: 35px; color: black;'>✔</div>";
+                } else {
+                    money -= 5;
+                    feedback_text = '<div style="font-size: 35px; color: black;">✘</div>';
+                }
+                } else {
+                    feedback_text = "<div style='font-size: 35px; color: black; font-weight: bold;'>&#11036</div>";
+                }
+                console.log("Money left:", money);
                 return feedback_text;
             },
             choices: "NO_KEYS",
@@ -245,15 +299,106 @@
         };
 
 
-           /* if (last_trial) {
-                feedback_text = "<span style=font-size: 35px; color: black;>✔</span>";
-            } else { feedback_text = '<div style="font-size: 35px; color: black;">✘<br>5 Ft-ot veszítettél</div>';
-            }
-            return feedback_text
+        //Feedback N-FB-I//
+        var money = 400;
+
+        var feedback_n_fb_i = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: function() {
+            var last_trial = jsPsych.data.getLastTrialData().values()[0];
+            console.log(last_trial);
+            var feedback_text;
+
+            if (last_trial.congruency === "incongruent") {
+                if (last_trial.correct) {
+                    feedback_text = "<div style='font-size: 35px; color: black;'>✔</div>";
+                } else {
+                    money -= 5;
+                    feedback_text = '<div style="font-size: 35px; color: black;">✘</div>';
+                }
+                } else {
+                    feedback_text = "<div style='font-size: 35px; color: black; font-weight: bold;'>&#11036</div>";
+                }
+                console.log("Money left:", money);
+                return feedback_text;
             },
             choices: "NO_KEYS",
             trial_duration: 700
-        }*/
+        }
+
+        //P-NF, ide kell majd kerülnie//
+
+        //összefoglaló változó//
+
+        //P-FB-C Session//
+        const trial_sequence_p_fb_c = {
+            timeline: [fixation, prime_trial,blank,probe_trial, feedback_p_fb_c],
+            timeline_variables: prime_probe_trials,
+            repetitions: 1
+        }
+        const block_intermission = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: "Vége a blokknak, ha készen állsz kérlek tedd az ujjaidat a billentyűkre és nyomj le egy gombot.",
+        choices: "ALL_KEYS",
+        }
+
+        const block_p_fb_c = {timeline: [trial_sequence_p_fb_c, block_intermission],
+            repetitions: 1
+        }
+        const feedthrough = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: "Most pihenhetsz! A következő részben újabb 400 Ft-ot kapsz. Ha készen állsz nyomd meg a Tovább gombot a folytatáshoz. ",
+        choices: ['Tovább'],
+        }
+        const session_p_fb_c = {timeline: [block_p_fb_c, feedthrough]
+        }
+
+
+        //P-FB-I Session//
+        const trial_sequence_p_fb_i = {
+            timeline: [fixation, prime_trial, blank, probe_trial, feedback_p_fb_i],
+            timeline_variables: prime_probe_trials,
+            repetitions: 1
+        }
+        const block_p_fb_i = {timeline: [trial_sequence_p_fb_i, block_intermission],
+            repetitions: 1
+        }
+
+        const session_p_fb_i = {timeline: [block_p_fb_i, feedthrough]
+        }
+
+        //N-FB-C Session//
+        const trial_sequence_n_fb_c = {
+            timeline: [fixation, prime_trial, blank, probe_trial, feedback_n_fb_c],
+            timeline_variables: prime_probe_trials,
+            repetitions: 1
+        }
+        const block_n_fb_c = {timeline: [trial_sequence_n_fb_c, block_intermission],
+            repetitions: 1
+        }
+
+        const session_n_fb_c = {timeline: [block_n_fb_c, feedthrough]
+        }
+
+        //N-FB-I Session//
+        const trial_sequence_n_fb_i = {
+            timeline: [fixation, prime_trial, blank, probe_trial, feedback_n_fb_i],
+            timeline_variables: prime_probe_trials,
+            repetitions: 1
+        }
+        const block_n_fb_i = {timeline: [trial_sequence_n_fb_i, block_intermission],
+            repetitions: 1
+        }
+
+        const session_n_fb_i = {timeline: [block_n_fb_i, feedthrough]
+        }
+
+
+
+        //Nagy összegző//
+        var all_sessions = {
+            timeline: [session_p_fb_c, session_p_fb_i, session_n_fb_c, session_n_fb_i]
+        }          
        
         var goodbye = {
             type: jsPsychHtmlKeyboardResponse,
@@ -262,15 +407,7 @@
             choices: "ALL_KEYS"
         }
 
-            
-        
-        //összefoglaló változó//
-        const trial_sequence = {
-            timeline: [fixation,prime_trial,blank,probe_trial, feedback],
-            timeline_variables: prime_probe_trials,
-        }
-
-        timeline.push(trial_sequence);
+        timeline.push(all_sessions)
         timeline.push(goodbye);
         jsPsych.run(timeline);
 
