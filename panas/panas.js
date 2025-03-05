@@ -113,16 +113,3 @@
     
     panas_timeline.push(procedure)
 
-  
-
-    var jsPsych = initJsPsych({
-      timeline: timeline,
-      on_finish: function(){
-        jsPsych.data.displayData();
-      }
-    });
-
-    // A master fileban ez sem fog kelleni, mert simán a panas_timeline lesz belerakva a fő timelineba,
-    // és majd azt futtatja a jspsych
-
-    jsPsych.run(panas_timeline);
