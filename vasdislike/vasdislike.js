@@ -17,7 +17,7 @@
       max: 100,
       start: 50,
       step: 1,
-      //slider_width: 200,
+      //slider_width: 500,
       require_movement: true,
       button_label: 'Tovább'
     };
