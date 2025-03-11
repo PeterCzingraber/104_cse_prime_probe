@@ -351,7 +351,7 @@ var feedback_p_fb_i = {
         }
         const block_intermission = {
         type: jsPsychHtmlKeyboardResponse,
-        stimulus: "Vége a blokknak, ha készen állsz kérlek tedd az ujjaidat a billentyűkre és nyomj le egy gombot.",
+        stimulus: "Vége a blokknak, most pihenhetsz! Ha készen állsz kérlek tedd az ujjaidat a billentyűkre és nyomj le egy gombot.",
         choices: "ALL_KEYS",
         }
 
@@ -359,9 +359,9 @@ var feedback_p_fb_i = {
             repetitions: 1
         }
         const feedthrough = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: "Most pihenhetsz! A következő részben újabb 400 Ft-ot kapsz. Ha készen állsz nyomd meg a Tovább gombot a folytatáshoz. ",
-        choices: ['Tovább'],
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: "A következő részben újabb 400 Ft-ot kapsz. Ha készen állsz nyomj le egy gombot a folytatáshoz.",
+        choices: "ALL_KEYS",
         }
         const session_p_fb_c = {timeline: [block_p_fb_c, feedthrough]
         }
@@ -410,7 +410,7 @@ var feedback_p_fb_i = {
 
         //Nagy összegző//
         var all_sessions = {
-            timeline: [panas_timeline, session_p_fb_c, session_p_fb_i, session_n_fb_c, session_n_fb_i]
+            timeline: [session_p_fb_c, session_p_fb_i, session_n_fb_c, session_n_fb_i, panas_timeline]
         }          
        
         var goodbye = {
