@@ -8,6 +8,10 @@
         <script src="jspsych/dist/plugin-survey-likert.js"></script>
         <script src="jspsych/dist/plugin-fullscreen.js"></script>
         <script src="mytrials.js"></script>
+
+        <script src="jspsych/dist/plugin-survey-likert.js"></script>
+        <script src="jspsych/dist/plugin-html-button-response.js"></script>
+        <script src="panas.js"></script>
         <script src="https://unpkg.com/@jspsych-contrib/plugin-html-vas-response@1.2.0"></script>
         <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
     </head>
@@ -102,26 +106,32 @@
         var data_handling = {
             type: jsPsychHtmlButtonResponse,
             stimulus: `<h2 style="text-align: center;">Adatkezelési tájékoztató</h2>
-                <p style="text-align: justify; max-width: 800px; margin: auto;">Szigorúan bizalmasan kezelünk minden olyan személyes információt, amit a kutatás keretén belül gyűjtünk össze. 
-                    A kutatás során nyert adatokat kóddal ellátva biztonságos számítógépeken tároljuk. A kutatás során nyert adatokat összegezzük. 
-                    Az ELTE PPK Affektív Pszichológia Tanszék Metatudomány Kutatócsoportja, mint adatkezelő, fenti személyes adataidat bizalmasan kezeli, más adatkezelőnek, adatfeldolgozónak nem adja át.
-                    E tényállás részleteit a <a href="http://metasciencelab.elte.hu/hozzajarulas-adatkezeleshez/" target=_blank">"Hozzájárulás adatkezeléshez"</a> c. dokumentum tartalmazza.</p>
+            <p style="text-align: justify; max-width: 800px; margin: auto;">Szigorúan bizalmasan kezelünk minden olyan személyes információt, amit a kutatás keretén belül gyűjtünk össze. 
+                A kutatás során nyert adatokat kóddal ellátva biztonságos számítógépeken tároljuk. A kutatás során nyert adatokat összegezzük. 
+                Az ELTE PPK Affektív Pszichológia Tanszék Metatudomány Kutatócsoportja, mint adatkezelő, fenti személyes adataidat bizalmasan kezeli, más adatkezelőnek, adatfeldolgozónak nem adja át.
+                E tényállás részleteit a <a href="http://metasciencelab.elte.hu/hozzajarulas-adatkezeleshez/" target=_blank">"Hozzájárulás adatkezeléshez"</a> c. dokumentum tartalmazza.</p>
 
-                <p>Az adatkezelésről szóló szabályzásról részletesebben pedig itt tájékozódhatsz:
-                        <a href="https://ppk.elte.hu/file/Hozzajarulas_adatkezeleshez_melleklet_2018.pdf" target="_blank">Hozzájárulás adatkezeléshez melléklet</a></p>
-                <p>A kutatás során nyert személyes adataidat arra használjuk fel, hogy regisztrálhassuk a részvételért járó kurzuspontokat és a pénzjutalmat. 
-                Az azonosítására alkalmas adatokat (NEPTUN kód) ezután törölni fogjuk. A kezelt adatok a következők:</p>
+            <p>Az adatkezelésről szóló szabályzásról részletesebben pedig itt tájékozódhatsz:
+                <a href="https://ppk.elte.hu/file/Hozzajarulas_adatkezeleshez_melleklet_2018.pdf" target="_blank">Hozzájárulás adatkezeléshez melléklet</a></p>
+            <p>A kutatás során nyert személyes adataidat arra használjuk fel, hogy regisztrálhassuk a részvételért járó kurzuspontokat és a pénzjutalmat. 
+            Az azonosítására alkalmas adatokat (NEPTUN kód) ezután törölni fogjuk. A kezelt adatok a következők:</p>
 
-                        <ul>
-                            <li>NEPTUN-kód</li>
-                            <li>Életkor</li>
-                            <li>Nem</li>
-                            <li>Iskolai végzettség</li>
-                        </ul>
-                <p>Válaszaid nem lesznek semmilyen módon hozzád köthetők. Az anonimizált adataidat más kutatókkal megosztjuk.</p>
-                <p><strong>Kérlek, amennyiben egyetértesz a fenti feltételekkel, és hozzájárulsz a kutatásban való részvételhez, kattints az "Igen" gombra.</strong></p>`,
-            choices: ['Igen']
-                        };
+                <ul>
+                    <li>NEPTUN-kód</li>
+                    <li>Életkor</li>
+                    <li>Nem</li>
+                    <li>Iskolai végzettség</li>
+                </ul>
+            <p>Válaszaid nem lesznek semmilyen módon hozzád köthetők. Az anonimizált adataidat más kutatókkal megosztjuk.</p>
+            <p><strong>Kérlek, amennyiben egyetértesz a fenti feltételekkel, és hozzájárulsz a kutatásban való részvételhez, kattints az "Igen" gombra.</strong></p>`,
+            choices: ['Igen', 'Nem'],
+            response_ends_trial: true,
+            on_finish: function(data) {
+            if (data.response == 1) {
+                jsPsych.abortExperiment('<p style="text-align: justify; max-width: 800px; margin: auto; font-size: 24px; font-weight: bold">A kísérlet véget ért. Köszönjük, hogy részt vettél a vizsgálatban!</p>');
+            }
+            }
+        };
         timeline.push(data_handling);
 
         /*informed consent*/
@@ -145,7 +155,13 @@
 
                 <p><strong>A kutatásban való részvételem körülményeiről részletes tájékoztatást kaptam, a feltételekkel egyetértek. 
                     Amennyiben egyetértesz a fenti feltételekkel, kattints az "Igen" gombra.</strong></p>`,
-            choices: ['Igen']
+            choices: ['Igen', 'Nem'],
+            response_ends_trial: true,
+            on_finish: function(data) {
+            if (data.response == 1) {
+                jsPsych.abortExperiment('<p style="text-align: justify; max-width: 800px; margin: auto; font-size: 24px; font-weight: bold">A kísérlet véget ért. Köszönjük, hogy részt vettél a vizsgálatban!</p>');
+            }
+            }
                         };
         timeline.push(informed_consent);
 
@@ -229,13 +245,13 @@
 
             if (last_trial.congruency === "congruent") {
                 if (last_trial.correct) {
-                    feedback_text = "<span style=font-size: 35px; color: black;>✔</span>";
+                    feedback_text = "<div style='font-size: 35px; color: black;'>✔</div>";
                 } else {
                     money -= 5;
-                    feedback_text = "<span style=font-size: 35px; color: black;>✘<br>5 Ft-ot veszítettél</span>";
+                    feedback_text = '<div style="font-size: 35px; color: black;">✘<br>5 Ft-ot veszítettél</div>';
                 }
                 } else {
-                    feedback_text = "<span style='font-size: 35px; color: black;'>⬛</span>";
+                    feedback_text = "<div style='font-size: 35px; color: black; font-weight: bold;'>&#11036</div>";
                 }
                 console.log("Money left:", money);
                 return feedback_text;
@@ -244,8 +260,7 @@
             trial_duration: 700
         };
 
-        
-        // Feedback P-FB-I//
+// Feedback P-FB-I//
         var money = 400;
 
 var feedback_p_fb_i = {
@@ -257,13 +272,13 @@ var feedback_p_fb_i = {
 
     if (last_trial.congruency === "incongruent") {
         if (last_trial.correct) {
-            feedback_text = "<span style=font-size: 35px; color: black;>✔</span>";
+            feedback_text = "<div style='font-size: 35px; color: black;'>✔</div>";
         } else {
             money -= 5;
-            feedback_text = "<span style=font-size: 35px; color: black;>✘<br>5 Ft-ot veszítettél</span>";
+            feedback_text = "<div style='font-size: 35px; color: black;'>✘<br>5 Ft-ot veszítettél</div>";
         }
         } else {
-            feedback_text = "<span style='font-size: 35px; color: black;'>⬛</span>";
+            feedback_text = "<div style='font-size: 35px; color: black; font-weight: bold;'>&#11036</div>";
         }
         console.log("Money left:", money);
         return feedback_text;
@@ -284,13 +299,13 @@ var feedback_p_fb_i = {
 
             if (last_trial.congruency === "congruent") {
                 if (last_trial.correct) {
-                    feedback_text = "<span style=font-size: 35px; color: black;>✔</span>";
+                    feedback_text = "<div style='font-size: 35px; color: black;'>✔</div>";
                 } else {
                     money -= 5;
-                    feedback_text = "<span style=font-size: 35px; color: black;>✘</span>";
+                    feedback_text = '<div style="font-size: 35px; color: black;">✘</div>';
                 }
                 } else {
-                    feedback_text = "<span style='font-size: 35px; color: black;'>⬛</span>";
+                    feedback_text = "<div style='font-size: 35px; color: black; font-weight: bold;'>&#11036</div>";
                 }
                 console.log("Money left:", money);
                 return feedback_text;
@@ -312,13 +327,13 @@ var feedback_p_fb_i = {
 
             if (last_trial.congruency === "incongruent") {
                 if (last_trial.correct) {
-                    feedback_text = "<span style=font-size: 35px; color: black;>✔</span>";
+                    feedback_text = "<div style='font-size: 35px; color: black;'>✔</div>";
                 } else {
                     money -= 5;
-                    feedback_text = "<span style=font-size: 35px; color: black;>✘</span>";
+                    feedback_text = '<div style="font-size: 35px; color: black;">✘</div>';
                 }
                 } else {
-                    feedback_text = "<span style='font-size: 35px; color: black;'>⬛</span>";
+                    feedback_text = "<div style='font-size: 35px; color: black; font-weight: bold;'>&#11036</div>";
                 }
                 console.log("Money left:", money);
                 return feedback_text;
@@ -327,33 +342,48 @@ var feedback_p_fb_i = {
             trial_duration: 700
         }
 
+         //Feedback RP-FB-R//
+         var money = 400;
+        var feedback_rp_fb_r = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: function() {
+            var last_trial = jsPsych.data.getLastTrialData().values()[0];
+            console.log(last_trial);
+            var feedback_text;
 
+        // Randomization at 40 percent
+        if (Math.random() < 0.4) {
+            money -= 5;
+            feedback_text = "<div style='font-size: 35px; color: black;'>✘<br>5 Ft-ot veszítettél</div>";
+        } else {
+            feedback_text = "<div style='font-size: 35px; color: black; font-weight: bold;'>&#11036</div>";
+        }
 
-
-        //P-NF, ide kell majd kerülnie//
-
-
-        //összefoglaló változó//
-
+        console.log("Money left:", money);
+        return feedback_text;
+    },
+        choices: "NO_KEYS",
+        trial_duration: 700
+};
         //P-FB-C Session//
         const trial_sequence_p_fb_c = {
             timeline: [fixation, prime_trial,blank,probe_trial, feedback_p_fb_c],
             timeline_variables: prime_probe_trials,
-            repetitions: 1
+            repetitions: 0
         }
         const block_intermission = {
         type: jsPsychHtmlKeyboardResponse,
-        stimulus: "Vége a blokknak, ha készen állsz kérlek tedd az ujjaidat a billentyűkre és nyomj le egy gombot.",
+        stimulus: "Vége a blokknak, most pihenhetsz! Ha készen állsz kérlek tedd az ujjaidat a billentyűkre és nyomj le egy gombot.",
         choices: "ALL_KEYS",
         }
 
         const block_p_fb_c = {timeline: [trial_sequence_p_fb_c, block_intermission],
-            repetitions: 1
+            repetitions: 0
         }
         const feedthrough = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: "Most pihenhetsz! A következő részben újabb 400 Ft-ot kapsz. Ha készen állsz nyomd meg a Tovább gombot a folytatáshoz. ",
-        choices: ['Tovább'],
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: "A következő részben újabb 400 Ft-ot kapsz. Ha készen állsz nyomj le egy gombot a folytatáshoz.",
+        choices: "ALL_KEYS",
         }
         const session_p_fb_c = {timeline: [block_p_fb_c, feedthrough]
         }
@@ -363,32 +393,23 @@ var feedback_p_fb_i = {
         const trial_sequence_p_fb_i = {
             timeline: [fixation, prime_trial, blank, probe_trial, feedback_p_fb_i],
             timeline_variables: prime_probe_trials,
-            repetitions: 1
+            repetitions: 0
         }
         const block_p_fb_i = {timeline: [trial_sequence_p_fb_i, block_intermission],
-            repetitions: 1
+            repetitions: 0
         }
 
         const session_p_fb_i = {timeline: [block_p_fb_i, feedthrough]
-        }
-
-
-        //N-FB-C Session//
-        var goodbye = {
-            type: jsPsychHtmlKeyboardResponse,
-            stimulus: `<h2>Kísérlet vége</h2>
-                <p>Köszönjük, hogy részt vettél a vizsgálatban!</p>`,
-            choices: "ALL_KEYS"
         }
 
         //N-FB-C Session//
         const trial_sequence_n_fb_c = {
             timeline: [fixation, prime_trial, blank, probe_trial, feedback_n_fb_c],
             timeline_variables: prime_probe_trials,
-            repetitions: 1
+            repetitions: 0
         }
         const block_n_fb_c = {timeline: [trial_sequence_n_fb_c, block_intermission],
-            repetitions: 1
+            repetitions: 0
         }
 
         const session_n_fb_c = {timeline: [block_n_fb_c, feedthrough]
@@ -398,23 +419,42 @@ var feedback_p_fb_i = {
         const trial_sequence_n_fb_i = {
             timeline: [fixation, prime_trial, blank, probe_trial, feedback_n_fb_i],
             timeline_variables: prime_probe_trials,
-            repetitions: 1
+            repetitions: 0
         }
         const block_n_fb_i = {timeline: [trial_sequence_n_fb_i, block_intermission],
-            repetitions: 1
+            repetitions: 0
         }
 
         const session_n_fb_i = {timeline: [block_n_fb_i, feedthrough]
         }
 
+        //RP-FB-R Session//
+        const trial_sequence_rp_fb_r = {
+            timeline: [fixation, prime_trial, blank, probe_trial, feedback_rp_fb_r],
+            timeline_variables: prime_probe_trials,
+            repetitions: 1
+        }
+        const block_rp_fb_r = {timeline: [trial_sequence_rp_fb_r, block_intermission],
+            repetitions: 1
+        }
 
+        const session_rp_fb_r = {timeline: [block_rp_fb_r, feedthrough]
+        }
+        
 
         //Nagy összegző//
-        var all_sessions = {timeline: [session_p_fb_c, session_p_fb_i, session_n_fb_c, session_n_fb_i]
-        } 
+        var all_sessions = {
+            timeline: [session_p_fb_c, session_p_fb_i, session_n_fb_c, session_n_fb_i, session_rp_fb_r, panas_timeline]
+        }          
+       
+        var goodbye = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: `<h2>Kísérlet vége</h2>
+                <p>Köszönjük, hogy részt vettél a vizsgálatban!</p>`,
+            choices: "ALL_KEYS"
+        }
 
         timeline.push(all_sessions)
-        timeline
         timeline.push(goodbye);
         jsPsych.run(timeline);
 
