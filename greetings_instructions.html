@@ -255,7 +255,8 @@ async function readJsonFile(filePath) {
         }
 
        
-        var money = 2000;
+        var money = 10;
+       
         //Feedback P-FB-C//
         var feedback_p_fb_c = {
             type: jsPsychHtmlKeyboardResponse,
@@ -273,10 +274,17 @@ async function readJsonFile(filePath) {
                 }
                 } else {
                     feedback_text = "<div style='font-size: 35px; color: black; font-weight: bold;'>&#11036</div>";
+                } 
+                if (money <= 0) { 
+                jsPsych.abortExperiment(`<p style="text-align: justify; max-width: 800px; margin: auto; font-size: 24px; font-weight: bold>"Elfogyott a pénzed." </p>`);
                 }
                 console.log("Money left:", money);
                 return feedback_text;
             },
+            on_finish: function() {
+        if (money <= 0) {
+            jsPsych.abortExperiment('<p style="text-align: justify; max-width: 800px; margin: auto; font-size: 24px; font-weight: bold">A kísérlet véget ért. Köszönjük, hogy részt vettél a vizsgálatban!</p>');
+        }; },
             choices: "NO_KEYS",
             trial_duration: 700
         };
