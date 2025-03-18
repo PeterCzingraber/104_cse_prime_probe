@@ -11,12 +11,33 @@
 
         <script src="jspsych/dist/plugin-survey-likert.js"></script>
         <script src="jspsych/dist/plugin-html-button-response.js"></script>
-        <script src="panas.js"></script>
+        <script src="panas/panas.js"></script>
         <script src="https://unpkg.com/@jspsych-contrib/plugin-html-vas-response@1.2.0"></script>
         <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
     </head>
     <body></body>
     <script>
+
+async function readJsonFile(filePath) {
+    try {
+        const response = await fetch(filePath);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error reading JSON file:', error);
+        return null;
+    }
+}
+
+(async () => {
+    const jsonData = await readJsonFile('https://www.metasciencelab.hu/104json/trials.json');
+    console.log(jsonData); // Now jsonData holds the JSON content
+})();
+
+
 
         ///optional sytling///
         var styles = `
@@ -233,9 +254,9 @@
             }
         }
 
+       
+        var money = 2000;
         //Feedback P-FB-C//
-        var money = 400;
-
         var feedback_p_fb_c = {
             type: jsPsychHtmlKeyboardResponse,
             stimulus: function() {
@@ -261,7 +282,7 @@
         };
 
 // Feedback P-FB-I//
-        var money = 400;
+
 
 var feedback_p_fb_i = {
     type: jsPsychHtmlKeyboardResponse,
@@ -288,7 +309,6 @@ var feedback_p_fb_i = {
 };
 
         //Feedback N-FB-C//
-        var money = 400;
 
         var feedback_n_fb_c = {
             type: jsPsychHtmlKeyboardResponse,
@@ -316,7 +336,6 @@ var feedback_p_fb_i = {
 
 
         //Feedback N-FB-I//
-        var money = 400;
 
         var feedback_n_fb_i = {
             type: jsPsychHtmlKeyboardResponse,
@@ -343,7 +362,7 @@ var feedback_p_fb_i = {
         }
 
          //Feedback RP-FB-R//
-         var money = 400;
+
         var feedback_rp_fb_r = {
             type: jsPsychHtmlKeyboardResponse,
             stimulus: function() {
@@ -369,7 +388,7 @@ var feedback_p_fb_i = {
         const trial_sequence_p_fb_c = {
             timeline: [fixation, prime_trial,blank,probe_trial, feedback_p_fb_c],
             timeline_variables: prime_probe_trials,
-            repetitions: 0
+            repetitions: 1
         }
         const block_intermission = {
         type: jsPsychHtmlKeyboardResponse,
@@ -378,7 +397,7 @@ var feedback_p_fb_i = {
         }
 
         const block_p_fb_c = {timeline: [trial_sequence_p_fb_c, block_intermission],
-            repetitions: 0
+            repetitions: 1
         }
         const feedthrough = {
         type: jsPsychHtmlKeyboardResponse,
@@ -393,10 +412,10 @@ var feedback_p_fb_i = {
         const trial_sequence_p_fb_i = {
             timeline: [fixation, prime_trial, blank, probe_trial, feedback_p_fb_i],
             timeline_variables: prime_probe_trials,
-            repetitions: 0
+            repetitions: 1
         }
         const block_p_fb_i = {timeline: [trial_sequence_p_fb_i, block_intermission],
-            repetitions: 0
+            repetitions: 1
         }
 
         const session_p_fb_i = {timeline: [block_p_fb_i, feedthrough]
@@ -406,10 +425,10 @@ var feedback_p_fb_i = {
         const trial_sequence_n_fb_c = {
             timeline: [fixation, prime_trial, blank, probe_trial, feedback_n_fb_c],
             timeline_variables: prime_probe_trials,
-            repetitions: 0
+            repetitions: 1
         }
         const block_n_fb_c = {timeline: [trial_sequence_n_fb_c, block_intermission],
-            repetitions: 0
+            repetitions: 1
         }
 
         const session_n_fb_c = {timeline: [block_n_fb_c, feedthrough]
@@ -419,10 +438,10 @@ var feedback_p_fb_i = {
         const trial_sequence_n_fb_i = {
             timeline: [fixation, prime_trial, blank, probe_trial, feedback_n_fb_i],
             timeline_variables: prime_probe_trials,
-            repetitions: 0
+            repetitions: 1
         }
         const block_n_fb_i = {timeline: [trial_sequence_n_fb_i, block_intermission],
-            repetitions: 0
+            repetitions: 1
         }
 
         const session_n_fb_i = {timeline: [block_n_fb_i, feedthrough]
@@ -444,7 +463,7 @@ var feedback_p_fb_i = {
 
         //Nagy összegző//
         var all_sessions = {
-            timeline: [session_p_fb_c, session_p_fb_i, session_n_fb_c, session_n_fb_i, session_rp_fb_r, panas_timeline]
+            timeline: [session_p_fb_c, session_p_fb_i, session_n_fb_c, session_n_fb_i, session_rp_fb_r, panas_timeline ]
         }          
        
         var goodbye = {
