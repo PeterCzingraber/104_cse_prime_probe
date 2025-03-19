@@ -15,9 +15,14 @@
         <script src="panas/panas.js"></script>
         <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
         <link href="styles.css" rel="stylesheet" type="text/css" />
+        <script src="jspsych/dist/plugin-survey-multi-choice.js"></script>
+        <script src="demographic_information.js"></script>
     </head>
     <body></body>
     <script>
+
+
+        //De
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const debug = urlParams.get('debug');
@@ -179,6 +184,7 @@
             }
                         };
         timeline.push(informed_consent);
+        timeline.push(education_timeline)
 
         /*instructions*/
         var instructions = {
