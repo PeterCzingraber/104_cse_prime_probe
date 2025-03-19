@@ -8,68 +8,62 @@
         <script src="jspsych/dist/plugin-survey-likert.js"></script>
         <script src="jspsych/dist/plugin-fullscreen.js"></script>
         <script src="mytrials.js"></script>
-       
+        <script src="jspsych/dist/plugin-html-slider-response.js"></script>
         <script src="jspsych/dist/plugin-survey-likert.js"></script>
         <script src="jspsych/dist/plugin-html-button-response.js"></script>
+        <script src="vasdislike/vasdislike.js"></script>
         <script src="panas/panas.js"></script>
-        <script src="https://unpkg.com/@jspsych-contrib/plugin-html-vas-response@1.2.0"></script>
         <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
+        <link href="styles.css" rel="stylesheet" type="text/css" />
     </head>
     <body></body>
     <script>
-
-        async function readJsonFile(filePath) {
-            try {
-                const response = await fetch(filePath);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                const data = await response.json();
-                return data;
-            }catch (error) {
-                console.error('Error reading JSON file', error);
-                return null;
-            }
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const debug = urlParams.get('debug');
+        if(debug == 1){
+            var probe_duration = 10;
+            var prime_duration = 1;
+            var feedback_duration = 1;
+            var blank_duration = 1;
+            var probe_stim_duration = 1;
+            var money = 20000000;
+            
+        }else{
+            var probe_duration = 1000;
+            var feedback_duration = 700;
+            var prime_duration = 500;
+            var blank_duration = 33;
+            var probe_stim_duration = 133;
+            //Defining money//
+            var money = 2000;
         }
 
-        (async () => {
-            const jsonData = await readJsonFile('https://www.metasciencelab.hu/104json/trials.json');
-            console.log(jsonData);
-        })();
 
+        function sampleItems(array, count = 22) {
+            let sampled = [];
+            let n = array.length;
 
-        ///optional sytling///
-        var styles = `
-        p{
-            text-align: justify;
-            max-width:800px;
-            margin: auto;
-            margin-bottom: 20px;
-        }
-        ul {
-            text-align: left;
-            list-style-position: inside;
-            margin-left: 20px;
+            for (let i = 0; i < count; i++) {
+                let j = i + Math.floor(Math.random() * (n - i)); // Random index from i to n-1
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+                sampled.push(array[i]); // Store the sampled item
             }
-        li {
-            margin-bottom: 5px;
-        }    
-    `
-        var styleSheet = document.createElement("style")
-        styleSheet.type = "text/css"
-        styleSheet.innerText = styles
-        document.head.appendChild(styleSheet)
-        ///////////////////////
-
-
-        ///Necessary functions/// --> call back function when the experiment is finished
-        ///var jspsych = initJsPsych({
-        /// experiment_width: 1000,
-        /// on_finish: function(){
-        ///    window.location = "ide_majd_valami"
-        //    }
-        //});
-
+        return sampled;
+        }
+        function read_my_trials(){
+            console.log(prime_probe_trials.trials)
+            var my_trials = prime_probe_trials.trials
+            console.log(my_trials[0]);
+            var my_blockset = sampleItems(my_trials, 20);
+            console.log(my_blockset);
+            return my_blockset;
+        }
+        var blockset = read_my_trials();
+        console.log(blockset);
+        var current_block = blockset[0];
+        var blockindex = 0;
+        
 
         var subj_code; //a variable that later stores a random subject code
         function makeid(length) {
@@ -178,6 +172,7 @@
             choices: ['Igen', 'Nem'],
             response_ends_trial: true,
             on_finish: function(data) {
+                console.log(blockset[0][0].prime);
             if (data.response == 1) {
                 jsPsych.abortExperiment('<p style="text-align: justify; max-width: 800px; margin: auto; font-size: 24px; font-weight: bold">A kísérlet véget ért. Köszönjük, hogy részt vettél a vizsgálatban!</p>');
             }
@@ -208,7 +203,12 @@
             stimulus: '<div style="font-size:60px;">+</div>',
             choices: "NO_KEYS",
             trial_duration: function() {
-            return Math.random() * (600 - 400) + 400;},
+                if (debug == 1){
+                    return 1;
+                }else{
+                    return Math.random() * (600 - 400) + 400;
+                }
+            },
             data: {
                 task: 'fixation'
             }
@@ -219,7 +219,7 @@
             type: jsPsychHtmlKeyboardResponse,
             stimulus: jsPsych.timelineVariable('prime'),
             choices: "NO_KEYS",
-            trial_duration: 500,
+            trial_duration: prime_duration,
             data:{
                 task:"prime"
             }
@@ -230,7 +230,7 @@
             type: jsPsychHtmlKeyboardResponse,
             stimulus: ' ',
             choices: "NO_KEYS",
-            trial_duration: 33,
+            trial_duration: blank_duration,
             data:{
                 task:"blank"
             }
@@ -241,7 +241,8 @@
             type: jsPsychHtmlKeyboardResponse,            
             stimulus: jsPsych.timelineVariable('probe'),
             choices: ["f", "j", "g", "n"],
-            stimulus_duration: 133,
+            stimulus_duration: probe_stim_duration,
+            trial_duration: probe_duration,
             data: {
                 correct_response: jsPsych.timelineVariable('correct_response'),
                 task: "probe",
@@ -249,12 +250,12 @@
                 name: jsPsych.timelineVariable('name')
             },
             on_finish: function(data) {
+                console.log(blockindex);
                 data.correct = data.response === data.correct_response;
             }
         }
 
-        //Defining money//
-        var money = 2000;
+        
 
         //Feedback P-FB-C//
         var feedback_p_fb_c = {
@@ -286,7 +287,7 @@
                 feedback_type: "punishment_congruent"
             },
             choices: "NO_KEYS",
-            trial_duration: 700
+            trial_duration: feedback_duration,
         };
 
 // Feedback P-FB-I//
@@ -319,7 +320,7 @@ var feedback_p_fb_i = {
         feedback_type: "punishment_incongruent"
             },          
     choices: "NO_KEYS",
-    trial_duration: 700
+    trial_duration: feedback_duration
 };
 
 //Feedback N-FB-C//
@@ -346,7 +347,7 @@ var feedback_n_fb_c = {
             feedback_type: "no_punishment_congruent"
         },
         choices: "NO_KEYS",
-        trial_duration: 700
+        trial_duration: feedback_duration
 };
 
 
@@ -374,7 +375,7 @@ var feedback_n_fb_i = {
             feedback_type: "no_punishment_incongruent"
         },
         choices: "NO_KEYS",
-        trial_duration: 700
+        trial_duration: feedback_duration
     };
 
 //Feedback RP-FB-R//
@@ -403,22 +404,32 @@ var feedback_rp_fb_r = {
         feedback_type: "random_punishment_random"
     },
         choices: "NO_KEYS",
-        trial_duration: 700
+        trial_duration: feedback_duration
 };
 
+        var trial_sequence = {
+            timeline: [fixation, prime_trial, blank, probe_trial]
+        }
         //P-FB-C Session//
         const trial_sequence_p_fb_c = {
-            timeline: [fixation, prime_trial,blank,probe_trial, feedback_p_fb_c],
-            timeline_variables: prime_probe_trials,
+            timeline: [trial_sequence, feedback_p_fb_c],
+            timeline_variables: current_block,
             repetitions: 1
         }
 
         const block_intro_punishment = {
             type:jsPsychHtmlKeyboardResponse,
-            stimulus: `<p style="text-align: justify; max-width: 800px; margin: auto; font-size: 24px">
+            stimulus: function(){ 
+                current_block = blockset[blockindex];
+                console.log(blockset[blockindex]);
+                console.log(current_block);
+                blockindex++;
+                console.log(blockindex);
+                return `<p style="text-align: justify; max-width: 800px; margin: auto; font-size: 24px">
                 <h3>Kezdődik az első blokk.</h3>
                 <p>Ebben a kondícióban a túl lassú vagy pontatlan válaszadásért <strong>5 Ft-t</strong> vonunk le. 
-                Ha készen állsz, tedd a bal középső ujjadat az „f”-re, a mutató ujjadat a „g”-re, a jobb mutató ujjadat az „n”-re, a középső ujjadat pedig a „j”-re. Nyomj le egy gombot a kezdéshez.</p>`,
+                Ha készen állsz, tedd a bal középső ujjadat az „f”-re, a mutató ujjadat a „g”-re, a jobb mutató ujjadat az „n”-re, a középső ujjadat pedig a „j”-re. Nyomj le egy gombot a kezdéshez.</p>`
+            },
             choices: "ALL_KEYS"
         }
 
@@ -429,7 +440,7 @@ var feedback_rp_fb_r = {
         }
 
         const block_p_fb_c = {timeline: [block_intro_punishment, trial_sequence_p_fb_c, block_intermission],
-            repetitions: 1
+            repetitions: 4
         }
         const feedthrough = {
         type: jsPsychHtmlKeyboardResponse,
@@ -442,71 +453,78 @@ var feedback_rp_fb_r = {
         const session_p_fb_c = {timeline: [block_p_fb_c, feedthrough]
         }
 
-        const session_pfbc_panas = {timeline: [session_p_fb_c, panas_timeline]
+        const session_pfbc_panas = {timeline: [session_p_fb_c, panas_timeline, vas_timeline]
         }
 
         //P-FB-I Session//
         const trial_sequence_p_fb_i = {
-            timeline: [fixation, prime_trial, blank, probe_trial, feedback_p_fb_i],
-            timeline_variables: prime_probe_trials,
+            timeline: [trial_sequence, feedback_p_fb_i],
+            timeline_variables: current_block,
             repetitions: 1
         }
         const block_p_fb_i = {timeline: [block_intro_punishment, trial_sequence_p_fb_i, block_intermission],
-            repetitions: 1
+            repetitions: 4
         }
 
         const session_p_fb_i = {timeline: [block_p_fb_i, feedthrough]
         }
 
-        const session_pfbi_panas = {timeline: [session_p_fb_i, panas_timeline]
+        const session_pfbi_panas = {timeline: [session_p_fb_i, panas_timeline, vas_timeline]
         }
 
         //N-FB-C Session//
         const trial_sequence_n_fb_c = {
-            timeline: [fixation, prime_trial, blank, probe_trial, feedback_n_fb_c],
-            timeline_variables: prime_probe_trials,
+            timeline: [trial_sequence, feedback_n_fb_c],
+            timeline_variables: current_block,
             repetitions: 1
         }
 
         const block_intro_no_punishment = {
             type:jsPsychHtmlKeyboardResponse,
-            stimulus: `<p style="text-align: justify; max-width: 800px; margin: auto; font-size: 24px">
+            stimulus: function(){ 
+                current_block = blockset[blockindex];
+                console.log(blockset[blockindex]);
+                console.log(current_block);
+                blockindex++;
+                console.log(blockindex);
+                return  `<p style="text-align: justify; max-width: 800px; margin: auto; font-size: 24px">
                 <h3>Kezdődik az első blokk.</h3>
                 <p>Ebben a kondícióban a hibázás <strong>nem jár pénzlevonással</strong>, ugyanakkor törekedj a minél gyorsabb és pontosabb válaszadásra.
-                Ha készen állsz, tedd a bal középső ujjadat az „f”-re, a mutató ujjadat a „g”-re, a jobb mutató ujjadat az „n”-re, a középső ujjadat pedig a „j”-re, majd nyomj le egy gombot.</p>`,
+                Ha készen állsz, tedd a bal középső ujjadat az „f”-re, a mutató ujjadat a „g”-re, a jobb mutató ujjadat az „n”-re, a középső ujjadat pedig a „j”-re, majd nyomj le egy gombot.</p>`
+            },
             choices: "ALL_KEYS"
         }
 
         const block_n_fb_c = {timeline: [block_intro_no_punishment, trial_sequence_n_fb_c, block_intermission],
-            repetitions: 1
+            repetitions: 4
         }
 
         const session_n_fb_c = {timeline: [block_n_fb_c, feedthrough]
         }
 
-        const session_nfbc_panas = {timeline: [session_n_fb_c, panas_timeline]
+        const session_nfbc_panas = {timeline: [session_n_fb_c, panas_timeline, vas_timeline   ]
         }
 
         //N-FB-I Session//
         const trial_sequence_n_fb_i = {
-            timeline: [fixation, prime_trial, blank, probe_trial, feedback_n_fb_i],
-            timeline_variables: prime_probe_trials,
+            timeline: [trial_sequence, feedback_n_fb_i],
+            timeline_variables: current_block,
             repetitions: 1
         }
         const block_n_fb_i = {timeline: [block_intro_no_punishment, trial_sequence_n_fb_i, block_intermission],
-            repetitions: 1
+            repetitions: 4
         }
 
         const session_n_fb_i = {timeline: [block_n_fb_i, feedthrough]
         }
 
-        const session_nfbi_panas = {timeline: [session_n_fb_i, panas_timeline]
+        const session_nfbi_panas = {timeline: [session_n_fb_i, panas_timeline, vas_timeline   ]
         }
 
         //RP-FB-R Session//
         const trial_sequence_rp_fb_r = {
-            timeline: [fixation, prime_trial, blank, probe_trial, feedback_rp_fb_r],
-            timeline_variables: prime_probe_trials,
+            timeline: [trial_sequence, feedback_rp_fb_r],
+            timeline_variables: current_block,
             repetitions: 1
         }
 
@@ -520,13 +538,13 @@ var feedback_rp_fb_r = {
         }
 
         const block_rp_fb_r = {timeline: [block_intro_random, trial_sequence_rp_fb_r, block_intermission],
-            repetitions: 1
+            repetitions: 4
         }
 
         const session_rp_fb_r = {timeline: [block_rp_fb_r, feedthrough]
         }
 
-        const session_r_panas = {timeline: [session_rp_fb_r, panas_timeline]
+        const session_r_panas = {timeline: [session_rp_fb_r, panas_timeline, vas_timeline   ]
         }
         
         function shuffle_all_sessions() {
