@@ -21,17 +21,9 @@
         button_label: 'Tovább'
       };
   
-      var vas2_timeline = [vas2_trial];
-  
-      var jsPsych = initJsPsych({
-        timeline: timeline,
-        on_finish: function(){
-          jsPsych.data.displayData();
-        }
-      });
-  
+      var vas2_timeline = [vas2_trial]
       // A master fileban ez sem fog kelleni, mert simán a vas2_timeline lesz belerakva a fő timelineba,
       // és majd azt futtatja a jspsych
   
-      jsPsych.run(vas2_timeline);
+
   

@@ -8,21 +8,24 @@
         <script src="jspsych/dist/plugin-survey-likert.js"></script>
         <script src="jspsych/dist/plugin-fullscreen.js"></script>
         <script src="mytrials.js"></script>
+        
         <script src="jspsych/dist/plugin-html-slider-response.js"></script>
         <script src="jspsych/dist/plugin-survey-likert.js"></script>
-        <script src="jspsych/dist/plugin-html-button-response.js"></script>
         <script src="vasdislike/vasdislike.js"></script>
         <script src="panas/panas.js"></script>
         <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
         <link href="styles.css" rel="stylesheet" type="text/css" />
         <script src="jspsych/dist/plugin-survey-multi-choice.js"></script>
+        <script src="jspsych/dist/plugin-survey-text.js"></script>
         <script src="demographic_information.js"></script>
+        <script src="practice_blocks.js"></script>
+        <script src="vasmanipulation/vasmanipulation.js"></script>
     </head>
     <body></body>
     <script>
 
 
-        //De
+        //Debug//
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const debug = urlParams.get('debug');
@@ -119,10 +122,9 @@
         message: "<p>A kísérlet teljes képernyős módra vált.</p>",
         button_label: 'Tovább'
         });
-        ////////
 
-        /*data handling and informed consent*/
-        var data_handling = {
+        //data handling and informed consent//
+        var data_handling = {   
             type: jsPsychHtmlButtonResponse,
             stimulus: `<h2 style="text-align: center;">Adatkezelési tájékoztató</h2>
             <p style="text-align: justify; max-width: 800px; margin: auto;">Szigorúan bizalmasan kezelünk minden olyan személyes információt, amit a kutatás keretén belül gyűjtünk össze. 
@@ -153,7 +155,7 @@
         };
         timeline.push(data_handling);
 
-        /*informed consent*/
+        //informed consent//
         var informed_consent = {
             type:jsPsychHtmlButtonResponse,
             stimulus: `<h2>Beleegyező nyilatkozat</h2>
@@ -184,9 +186,10 @@
             }
                         };
         timeline.push(informed_consent);
-        timeline.push(education_timeline)
+        timeline.push(demographic_timeline);
+        console.log(demographic_timeline);
 
-        /*instructions*/
+        //instructions//
         var instructions = {
             type: jsPsychHtmlKeyboardResponse,
             stimulus: `<h2>Instrukciók</h2>
@@ -201,7 +204,82 @@
             choices: "ALL_KEYS"
         };
         timeline.push(instructions);
+        
    
+   /*     //Practice block//
+        var practice_blocks = {
+            timeline: [trial_sequence, feedback_prac_fb],
+            timeline_variables: current_block,
+            repetitions: 1
+        };
+        console.log(practice_blocks),
+        timeline.push(practice_blocks);
+        //Practice feedback//
+    var feedback_prac_fb = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: function() {
+    var last_trial = jsPsych.data.getLastTrialData().values()[0];
+    console.log(last_trial);
+    var feedback_text;
+        if (last_trial.correct) {
+            feedback_text = "<div style='font-size: 35px; color: black;'>✔</div>";
+        } else {
+            feedback_text = '<div style="font-size: 35px; color: black;">✘</div>';
+        }
+        return feedback_text;
+    },
+        choices: "NO_KEYS",
+        trial_duration: feedback_duration
+}; */
+
+
+//Practice blocks//
+var prac_instructions = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: `<h2>Gyakorló blokk</h2>
+            <p>A kísérlet megkezdése előtt egy rövid gyakorló blokk következik. Ebben a blokkban nem vonunk le pénzt a hibás válaszokért, azonban a válaszaid pontosságát és gyorsaságát figyelemmel kísérjük. 
+            Ha készen állsz, nyomj meg egy tetszőleges billentyűt a kezdéshez.</p>`
+}
+
+var prime_prac_trial = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: jsPsych.timelineVariable('prime'),
+    choices: "NO_KEYS",
+    trial_duration: prime_duration,
+}
+
+var probe_prac_trial = {
+            type: jsPsychHtmlKeyboardResponse,            
+            stimulus: jsPsych.timelineVariable('probe'),
+            choices: ["f", "j", "g", "n"],
+            stimulus_duration: probe_stim_duration,
+            trial_duration: probe_duration,
+            data: {
+                correct_response: jsPsych.timelineVariable('correct_response')
+            },
+            on_finish: function(data) {
+                data.correct = data.response === data.correct_response;
+            }
+         }
+
+var feedback_prac_fb = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: function() {
+    var last_trial = jsPsych.data.getLastTrialData().values()[0];
+    console.log(last_trial);
+    var feedback_text;
+        if (last_trial.correct) {
+            feedback_text = "<div style='font-size: 35px; color: black;'>✔</div>";
+        } else {
+            feedback_text = '<div style="font-size: 35px; color: black;">✘</div>';
+        }
+        return feedback_text;
+    },
+        choices: "NO_KEYS",
+        trial_duration: feedback_duration
+};
+    
+
 
         //Fixation cross//
         var fixation = {
@@ -261,7 +339,14 @@
             }
         }
 
-        
+         var practice_blocks = {
+    timeline: [fixation, prime_prac_trial, blank, probe_prac_trial, feedback_prac_fb],
+    timeline_variables: prime_probe_prac,
+    repetitions: 2
+
+}
+
+timeline.push(practice_blocks);
 
         //Feedback P-FB-C//
         var feedback_p_fb_c = {
@@ -445,7 +530,7 @@ var feedback_rp_fb_r = {
         choices: "ALL_KEYS",
         }
 
-        const block_p_fb_c = {timeline: [block_intro_punishment, trial_sequence_p_fb_c, block_intermission],
+        const block_p_fb_c = {timeline: [trial_sequence_p_fb_c, block_intermission],
             repetitions: 4
         }
         const feedthrough = {
@@ -456,7 +541,7 @@ var feedback_rp_fb_r = {
         },
         choices: "ALL_KEYS",
         }
-        const session_p_fb_c = {timeline: [block_p_fb_c, feedthrough]
+        const session_p_fb_c = {timeline: [block_intro_punishment, block_p_fb_c, feedthrough]
         }
 
         const session_pfbc_panas = {timeline: [session_p_fb_c, panas_timeline, vas_timeline]
@@ -468,11 +553,11 @@ var feedback_rp_fb_r = {
             timeline_variables: current_block,
             repetitions: 1
         }
-        const block_p_fb_i = {timeline: [block_intro_punishment, trial_sequence_p_fb_i, block_intermission],
+        const block_p_fb_i = {timeline: [trial_sequence_p_fb_i, block_intermission],
             repetitions: 4
         }
 
-        const session_p_fb_i = {timeline: [block_p_fb_i, feedthrough]
+        const session_p_fb_i = {timeline: [block_intro_punishment, block_p_fb_i, feedthrough]
         }
 
         const session_pfbi_panas = {timeline: [session_p_fb_i, panas_timeline, vas_timeline]
@@ -501,11 +586,11 @@ var feedback_rp_fb_r = {
             choices: "ALL_KEYS"
         }
 
-        const block_n_fb_c = {timeline: [block_intro_no_punishment, trial_sequence_n_fb_c, block_intermission],
+        const block_n_fb_c = {timeline: [trial_sequence_n_fb_c, block_intermission],
             repetitions: 4
         }
 
-        const session_n_fb_c = {timeline: [block_n_fb_c, feedthrough]
+        const session_n_fb_c = {timeline: [block_intro_no_punishment, block_n_fb_c, feedthrough]
         }
 
         const session_nfbc_panas = {timeline: [session_n_fb_c, panas_timeline, vas_timeline   ]
@@ -517,11 +602,11 @@ var feedback_rp_fb_r = {
             timeline_variables: current_block,
             repetitions: 1
         }
-        const block_n_fb_i = {timeline: [block_intro_no_punishment, trial_sequence_n_fb_i, block_intermission],
+        const block_n_fb_i = {timeline: [trial_sequence_n_fb_i, block_intermission],
             repetitions: 4
         }
 
-        const session_n_fb_i = {timeline: [block_n_fb_i, feedthrough]
+        const session_n_fb_i = {timeline: [block_intro_no_punishment, block_n_fb_i, feedthrough]
         }
 
         const session_nfbi_panas = {timeline: [session_n_fb_i, panas_timeline, vas_timeline   ]
@@ -543,11 +628,11 @@ var feedback_rp_fb_r = {
             choices: "ALL_KEYS"
         }
 
-        const block_rp_fb_r = {timeline: [block_intro_random, trial_sequence_rp_fb_r, block_intermission],
+        const block_rp_fb_r = {timeline: [trial_sequence_rp_fb_r, block_intermission],
             repetitions: 4
         }
 
-        const session_rp_fb_r = {timeline: [block_rp_fb_r, feedthrough]
+        const session_rp_fb_r = {timeline: [block_intro_random, block_rp_fb_r, feedthrough]
         }
 
         const session_r_panas = {timeline: [session_rp_fb_r, panas_timeline, vas_timeline   ]
@@ -573,6 +658,7 @@ var feedback_rp_fb_r = {
         }
         
         timeline.push(all_sessions)
+        timeline.push(vas2_timeline);
         timeline.push(goodbye);
         jsPsych.run(timeline);
 
