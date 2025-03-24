@@ -83,9 +83,9 @@
 
     var intro = {
       type: jsPsychHtmlButtonResponse,
-      stimulus: '<p>A következő kifejezések érzéseket, állapotokat írnak le.</p>' +
-                '<p>Kérlek, jelöld be azt a számot, ami a legjobban kifejezi, hogy jelen pillanatban hogyan érzed magad.</p>' +
-                '<p>Nyomd meg a "Tovább" gombot a kezdéshez.</p>',
+      stimulus: `<h3>A következő kifejezések érzéseket, állapotokat írnak le.</h3> 
+                <p style="text-align: center; max-width: 800px; margin: auto; font-size: 20px">
+                Jelöld be azt a számot, ami a legjobban kifejezi, hogy jelen pillanatban hogyan érzed magad. Nyomd meg a "Tovább" gombot a kezdéshez.</p>`,
       choices: ['Tovább']
     };
 
@@ -96,13 +96,15 @@
     var trial = {
         type: jsPsychSurveyLikert,
         questions: function(){
-          console.log(jsPsych.timelineVariable('question')['prompt'])
-          question_object = jsPsych.timelineVariable('question')
+         
+          console.log(jsPsych.evaluateTimelineVariable('question')['prompt'])
+          question_object = jsPsych.evaluateTimelineVariable('question')
           question_object['labels'] = likert_scale
           question_object['required'] = true
-          myarray = [jsPsych.timelineVariable('question')]
+          myarray = [jsPsych.evaluateTimelineVariable('question')]
           return myarray
-        }
+        },
+        button_label: 'Tovább',
       };
 
     var procedure = {
