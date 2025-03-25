@@ -241,13 +241,13 @@ var probe_prac_trial = {
     stimulus_duration: probe_stim_duration,
     trial_duration: probe_duration,
     data: {
-        correct_response: jsPsych.timelineVariable('correct_response')
+        correct_response: jsPsych.timelineVariable('correct_response'),
+        task: "probe"
     },
     on_finish: function(data) {
         data.correct = data.response === data.correct_response;
     }
-}
-
+};
 var feedback_prac_fb = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: function() {
@@ -260,6 +260,7 @@ var feedback_prac_fb = {
             feedback_text = '<div style="font-size: 35px; color: black;">✘</div>';
         }
         return feedback_text;
+        console.log(feedback_text);
     },
         choices: "NO_KEYS",
         trial_duration: feedback_duration
@@ -304,7 +305,7 @@ var blank = {
     }
 }
 
-PracticeLoopIndex = 1;
+/*PracticeLoopIndex = 1;*/
 
 //Probe//
 var probe_trial = {
@@ -322,48 +323,37 @@ var probe_trial = {
     on_finish: function(data) {
         console.log(blockindex);
         data.correct = data.response === data.correct_response;
-        data.practice_loop = PracticeLoopIndex
+        }
     }
-}
+ 
 
 //Practice trials//
 var practice_blocks = {
-    timeline: [fixation, prime_prac_trial, blank, probe_prac_trial, feedback_prac_fb],
+    timeline: [fixation, prime_trial, blank, probe_trial, feedback_prac_fb],
     timeline_variables: prime_probe_prac,
+    randomize_order: true,
     repetitions: 2,
-    data: {
-        block: "practice"
-    },
-    on_finish: function (data){
-        var trials = jsPsych.data.get().filter({task: "response", practice_loop: PracticeLoopIndex})
-        var correct_trials = jsPsych.data.get().filter({task: "response", correct: true, practice_loop: PracticeLoopIndex})
-        accuracy = Math.round(correct_trials.count() / trials.count() * 100)
+    loop_function: function(data) {
+        console.log(data);
+        var correct_trials = data.filter({task: "probe",correct: true}).count();
+        console.log(correct_trials);
+        var total_trials = data.filter({task: "probe"}).count();
+        
+        if (total_trials > 0) {
+            var accuracy = (correct_trials / total_trials) * 100;
+            console.log("Accuracy:", accuracy + "%");
+            if (accuracy >= 80) {
+                return false;
+            } else {
+                return true;
+            }
+          
+        }
     }
-}
-
-var practice_blocks_2 = {
-    timeline: [fixation, prime_prac_trial, blank, probe_prac_trial, feedback_prac_fb],
-    timeline_variables: prime_probe_prac,
-    repetitions: 2
-}
+};
 
 var all_practice_blocks = {
-    timeline: [prac_instructions, practice_blocks, prac_intermission, practice_blocks_2, prac_end],
-    on_timeline_start: function (data) {
-        console.log(PracticeLoopIndex + ". practice loop")
-    },
-    on_timeline_finish: function () {
-      PracticeLoopIndex++
-    },
-    loop_function: function (data) {
-        if (accuracy >= 0) { 
-      console.log('accuracy passed') 
-      return false 
-    } else { 
-      console.log('accuracy failed')
-      return true
-    }
-    },
+    timeline: [prac_instructions, practice_blocks, prac_intermission, practice_blocks, prac_end]
   }
 
 timeline.push(all_practice_blocks);
