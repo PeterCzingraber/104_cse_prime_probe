@@ -532,7 +532,7 @@ const trial_sequence_p_fb_c = {
 }
 
 const block_p_fb_c = {timeline: [trial_sequence_p_fb_c, block_intermission],
-    repetitions: 4
+    repetitions: 3
 }
 
 const feedthrough = {
@@ -558,7 +558,7 @@ const trial_sequence_p_fb_i = {
 }
 
 const block_p_fb_i = {timeline: [trial_sequence_p_fb_i, block_intermission],
-    repetitions: 4
+    repetitions: 3
 }
 
 const session_p_fb_i = {timeline: [block_intro_punishment, block_p_fb_i, feedthrough]
@@ -591,7 +591,7 @@ const block_intro_no_punishment = {
 }
 
 const block_n_fb_c = {timeline: [trial_sequence_n_fb_c, block_intermission],
-    repetitions: 4
+    repetitions: 3
 }
 
 const session_n_fb_c = {timeline: [block_intro_no_punishment, block_n_fb_c, feedthrough]
@@ -607,7 +607,7 @@ const trial_sequence_n_fb_i = {
     repetitions: 1
 }
 const block_n_fb_i = {timeline: [trial_sequence_n_fb_i, block_intermission],
-    repetitions: 4
+    repetitions: 3
 }
 
 const session_n_fb_i = {timeline: [block_intro_no_punishment, block_n_fb_i, feedthrough]
@@ -633,7 +633,7 @@ const block_intro_random = {
 }
 
 const block_rp_fb_r = {timeline: [trial_sequence_rp_fb_r, block_intermission],
-    repetitions: 4
+    repetitions: 3
 }
 
 const session_rp_fb_r = {timeline: [block_intro_random, block_rp_fb_r, feedthrough]
@@ -679,6 +679,8 @@ timeline.push(informed_consent);
 timeline.push(demographic_timeline);
 timeline.push(instructions);
 timeline.push(all_practice_blocks);
+timeline.push(panas_timeline);
+timeline.push(vas_timeline);
 timeline.push(all_sessions)
 timeline.push(vas2_timeline);
 timeline.push(goodbye);
