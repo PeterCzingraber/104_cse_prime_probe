@@ -1,10 +1,6 @@
 
     // Hivatkozz rám úgy, hogy:
     //  <script src="vasdislike/vasdislike.js"></script>
-
-    // <title>VAS Dislike</title>
-    // <script src="../jspsych/jspsych.js"></script>
-    // <script src="../jspsych/plugin-html-slider-response.js"></script>
   
     var vas_trial = {
       type: jsPsychHtmlSliderResponse,
@@ -23,15 +19,3 @@
     };
 
     var vas_timeline = [vas_trial];
-
-    var jsPsych = initJsPsych({
-      timeline: timeline,
-      on_finish: function(){
-        jsPsych.data.displayData();
-      }
-    });
-
-    // A master fileban ez sem fog kelleni, mert simán a vas_timeline lesz belerakva a fő timelineba,
-    // és majd azt futtatja a jspsych
-
-    jsPsych.run(vas_timeline);
