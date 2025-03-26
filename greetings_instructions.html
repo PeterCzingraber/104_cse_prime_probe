@@ -8,7 +8,6 @@
         <script src="jspsych/dist/plugin-survey-likert.js"></script>
         <script src="jspsych/dist/plugin-fullscreen.js"></script>
         <script src="mytrials.js"></script>
-        
         <script src="jspsych/dist/plugin-html-slider-response.js"></script>
         <script src="jspsych/dist/plugin-survey-likert.js"></script>
         <script src="vasdislike/vasdislike.js"></script>
@@ -20,12 +19,11 @@
         <script src="demographic_information.js"></script>
         <script src="practice_blocks.js"></script>
         <script src="vasmanipulation/vasmanipulation.js"></script>
-        <!--<script src="jatos.js"></script>-->
-
+        <script src="jatos.js"></script>
     </head>
     <body></body>
-    <script>
-
+    <script> 
+     
 
         //Debug//
         const queryString = window.location.search;
@@ -115,15 +113,8 @@
                 <p>A kutatásban való részvétel teljesen önkéntes. A vizsgálatot bármikor indoklás nélkül megszakíthatod. Ha bármilyen kérdésed, észrevételed vagy problémád van a kutatással kapcsolatban, írj Bognár Miklósnak a <a href="mailto:bognar.miklos@ppk.elte.hu">bognar.miklos@ppk.elte.hu</a> címre.</p>`,
             choices: ['Tovább']
         };
-        timeline.push(welcome);
+       
 
-        //Fullscreen//
-        timeline.push({
-        type: jsPsychFullscreen,
-        fullscreen_mode: true,
-        message: "<p>A kísérlet teljes képernyős módra vált.</p>",
-        button_label: 'Tovább'
-        });
 
         //data handling and informed consent//
         var data_handling = {   
@@ -136,7 +127,7 @@
 
             <p>Az adatkezelésről szóló szabályzásról részletesebben pedig itt tájékozódhatsz:
                 <a href="https://ppk.elte.hu/file/Hozzajarulas_adatkezeleshez_melleklet_2018.pdf" target="_blank">Hozzájárulás adatkezeléshez melléklet</a></p>
-            <p>A kutatás során nyert személyes adataidat arra használjuk fel, hogy regisztrálhassuk a részvételért járó kurzuspontokat és a pénzjutalmat. 
+            <p>A kutatás során nyert személyes adataidat arra használjuk fel, hogy regisztrálhassuk a részvételért járó kurzuspontokat. 
             Az azonosítására alkalmas adatokat (NEPTUN kód) ezután törölni fogjuk. A kezelt adatok a következők:</p>
 
                 <ul>
@@ -155,7 +146,7 @@
             }
             }
         };
-        timeline.push(data_handling);
+       
 
         //informed consent//
         var informed_consent = {
@@ -173,8 +164,8 @@
                     Hozzájárulok ahhoz, hogy a vizsgálat során a rólam felvett, személyem azonosítására nem alkalmas adatok más kutatók számára is hozzáférhetők legyenek.
                     Fenntartom a jogot arra, hogy a vizsgálat során annak folytatásától bármikor elállhassak. 
                     Ilyen esetben a rólam addig felvett adatokat törölni kell.</p>
-
-                <p>Tudomásul veszem, hogy csak a teljesen befejezett kitöltésért kapok pontot és pénzjutalmat a <em>Pszichológiai kísérletben és tudományos aktivitásban való részvétel</em> nevű kurzuson.</p>
+.
+                <p>Tudomásul veszem, hogy csak a teljesen befejezett kitöltésért kapok pontot a <em>Pszichológiai kísérletben és tudományos aktivitásban való részvétel</em> nevű kurzuson.</p>
 
                 <p><strong>A kutatásban való részvételem körülményeiről részletes tájékoztatást kaptam, a feltételekkel egyetértek. 
                     Amennyiben egyetértesz a fenti feltételekkel, kattints az "Igen" gombra.</strong></p>`,
@@ -187,8 +178,7 @@
             }
             }
                         };
-        timeline.push(informed_consent);
-        timeline.push(demographic_timeline);
+      
         console.log(demographic_timeline);
 
         //instructions//
@@ -205,7 +195,7 @@
                 <p style="text-align: center;"><em>Amennyiben készen állsz a kísérlet megkezdésére, nyomj meg egy tetszőleges billentyűt!</em></p>`,
             choices: "ALL_KEYS"
         };
-        timeline.push(instructions);
+    
 
 //Practice blocks//
 var prac_instructions = {
@@ -304,9 +294,6 @@ var blank = {
         task:"blank"
     }
 }
-
-/*PracticeLoopIndex = 1;*/
-
 //Probe//
 var probe_trial = {
     type: jsPsychHtmlKeyboardResponse,            
@@ -356,7 +343,7 @@ var all_practice_blocks = {
     timeline: [prac_instructions, practice_blocks, prac_intermission, practice_blocks, prac_end]
   }
 
-timeline.push(all_practice_blocks);
+
 
 //Feedback P-FB-C//
 var feedback_p_fb_c = {
@@ -370,12 +357,12 @@ var feedback_p_fb_c = {
                 feedback_text = "<div style='font-size: 35px; color: black;'>✔</div>";
             } else {
                 money -= 5;
-                feedback_text = '<div style="font-size: 35px; color: black;">✘<br>5 Ft-ot veszítettél</div>';
+                feedback_text = '<div style="font-size: 35px; color: black;">✘<br>5 garast veszítettél</div>';
             }
             } else {
                 feedback_text = "<div style='font-size: 35px; color: black; font-weight: bold;'>&#11036</div>";
             }
-            console.log("Money left:", money);
+            console.log("Garas left:", money);
             return feedback_text;
             },
         on_finish: function() {
@@ -403,12 +390,12 @@ var feedback_p_fb_i = {
             feedback_text = "<div style='font-size: 35px; color: black;'>✔</div>";
         } else {
             money -= 5;
-            feedback_text = "<div style='font-size: 35px; color: black;'>✘<br>5 Ft-ot veszítettél</div>";
+            feedback_text = "<div style='font-size: 35px; color: black;'>✘<br>5 garast veszítettél</div>";
         }
         } else {
             feedback_text = "<div style='font-size: 35px; color: black; font-weight: bold;'>&#11036</div>";
         }
-        console.log("Money left:", money);
+        console.log("Garas left:", money);
         return feedback_text;
     },
     on_finish: function() {
@@ -440,7 +427,7 @@ var feedback_n_fb_c = {
         } else {
             feedback_text = "<div style='font-size: 35px; color: black; font-weight: bold;'>&#11036</div>";
         }
-        console.log("Money left:", money);
+        console.log("Garas left:", money);
         return feedback_text;
         },
         data:{
@@ -467,7 +454,7 @@ var feedback_n_fb_i = {
         } else {
             feedback_text = "<div style='font-size: 35px; color: black; font-weight: bold;'>&#11036</div>";
         }
-        console.log("Money left:", money);
+        console.log("Garas left:", money);
         return feedback_text;
         },
         data:{
@@ -486,12 +473,12 @@ var feedback_rp_fb_r = {
     var feedback_text;
         if (Math.random() < 0.4) {
             money -= 5;
-            feedback_text = "<div style='font-size: 35px; color: black;'>✘<br>5 Ft-ot veszítettél</div>";
+            feedback_text = "<div style='font-size: 35px; color: black;'>✘<br>5 garast veszítettél</div>";
         } else {
             feedback_text = "<div style='font-size: 35px; color: black; font-weight: bold;'>&#11036</div>";
         }
 
-        console.log("Money left:", money);
+        console.log("Garas left:", money);
         return feedback_text;
     },
     on_finish: function() {
@@ -522,7 +509,7 @@ const block_intro_punishment = {
         console.log(blockindex);
         return `<p style="text-align: justify; max-width: 800px; margin: auto; font-size: 24px">
         <h3>Kezdődik az első blokk.</h3>
-        <p>Ebben a kondícióban a túl lassú vagy pontatlan válaszadásért <strong>5 Ft-t</strong> vonunk le. 
+        <p>Ebben a kondícióban a túl lassú vagy pontatlan válaszadásért <strong>5 garast</strong> vonunk le. 
         Ha készen állsz, tedd a bal középső ujjadat az „f”-re, a mutató ujjadat a „g”-re, a jobb mutató ujjadat az „n”-re, a középső ujjadat pedig a „j”-re. Nyomj le egy gombot a kezdéshez.</p>`
     },
     choices: "ALL_KEYS"
@@ -542,14 +529,14 @@ const trial_sequence_p_fb_c = {
 }
 
 const block_p_fb_c = {timeline: [trial_sequence_p_fb_c, block_intermission],
-    repetitions: 4
+    repetitions: 3
 }
 
 const feedthrough = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: function() {
         var current_money = money;
-        return `<p style="text-align: center; max-width: 800px; margin: auto; font-size: 24px"> A kísérletnek ezen szakasza befejeződött. Összesen <strong>${current_money} forintod</strong> maradt. Ha készen állsz, nyomj le egy gombot a folytatáshoz.</p>`;
+        return `<p style="text-align: center; max-width: 800px; margin: auto; font-size: 24px"> A kísérletnek ezen szakasza befejeződött. Összesen <strong>${current_money} garasod</strong> maradt. Ha készen állsz, nyomj le egy gombot a folytatáshoz.</p>`;
     },
     choices: "ALL_KEYS",
 }
@@ -568,7 +555,7 @@ const trial_sequence_p_fb_i = {
 }
 
 const block_p_fb_i = {timeline: [trial_sequence_p_fb_i, block_intermission],
-    repetitions: 4
+    repetitions: 3
 }
 
 const session_p_fb_i = {timeline: [block_intro_punishment, block_p_fb_i, feedthrough]
@@ -594,14 +581,14 @@ const block_intro_no_punishment = {
         console.log(blockindex);
         return  `<p style="text-align: justify; max-width: 800px; margin: auto; font-size: 24px">
         <h3>Kezdődik az első blokk.</h3>
-        <p>Ebben a kondícióban a hibázás <strong>nem jár pénzlevonással</strong>, ugyanakkor törekedj a minél gyorsabb és pontosabb válaszadásra.
+        <p>Ebben a kondícióban a hibázás <strong>nem jár garaslevonással</strong>, ugyanakkor törekedj a minél gyorsabb és pontosabb válaszadásra.
         Ha készen állsz, tedd a bal középső ujjadat az „f”-re, a mutató ujjadat a „g”-re, a jobb mutató ujjadat az „n”-re, a középső ujjadat pedig a „j”-re, majd nyomj le egy gombot.</p>`
     },
     choices: "ALL_KEYS"
 }
 
 const block_n_fb_c = {timeline: [trial_sequence_n_fb_c, block_intermission],
-    repetitions: 4
+    repetitions: 3
 }
 
 const session_n_fb_c = {timeline: [block_intro_no_punishment, block_n_fb_c, feedthrough]
@@ -617,7 +604,7 @@ const trial_sequence_n_fb_i = {
     repetitions: 1
 }
 const block_n_fb_i = {timeline: [trial_sequence_n_fb_i, block_intermission],
-    repetitions: 4
+    repetitions: 3
 }
 
 const session_n_fb_i = {timeline: [block_intro_no_punishment, block_n_fb_i, feedthrough]
@@ -637,13 +624,13 @@ const block_intro_random = {
     type:jsPsychHtmlKeyboardResponse,
     stimulus: `<p style="text-align: justify; max-width: 800px; margin: auto; font-size: 24px">
         <h3>Kezdődik az első blokk.</h3>
-        <p>Ebben a kondícióban pénzlevonás érhet a <strong>teljesítményedtől függetlenül</strong>. Törekedj a minél gyorsabb és pontosabb válaszadásra.
+        <p>Ebben a kondícióban garaslevonás érhet a <strong>teljesítményedtől függetlenül</strong>. Törekedj a minél gyorsabb és pontosabb válaszadásra.
         Ha készen állsz, tedd a bal középső ujjadat az „f”-re, a mutató ujjadat a „g”-re, a jobb mutató ujjadat az „n”-re, a középső ujjadat pedig a „j”-re, majd nyomj le egy gombot.</p>`,
     choices: "ALL_KEYS"
 }
 
 const block_rp_fb_r = {timeline: [trial_sequence_rp_fb_r, block_intermission],
-    repetitions: 4
+    repetitions: 3
 }
 
 const session_rp_fb_r = {timeline: [block_intro_random, block_rp_fb_r, feedthrough]
@@ -667,26 +654,41 @@ var all_sessions = {
        
 var goodbye = {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: `<h2>Kísérlet vége</h2>
-        <p>Köszönjük, hogy részt vettél a vizsgálatban!</p>`,
+    stimulus:
+         function() { `<h2>Kísérlet vége</h2>
+        <p>Köszönjük, hogy részt vettél a vizsgálatban!</p>`
+        var current_money = money;
+        return `<h2>Kísérlet vége</h2> <p style="text-align: center; max-width: 800px; margin: auto; font-size: 24px"> Köszönjük, hogy részt vettél a vizsgálatban! Összesen <strong>${current_money} garas</strong> maradt.</p>`
+    },
     choices: "ALL_KEYS"
 }
-        
-timeline.push(all_sessions)
-timeline.push(vas2_timeline);
-timeline.push(goodbye);
-jsPsych.run(timeline);
-
-/// jatos.onLoad(() => {
-  ///jsPsych.run(timeline); --> ezt majd a timelineokba kell tenni
-
-///});
-
-        //JATOS, de csak a végén, különben csak JATOS-on keresztül lehet lefutattni//
-        /* var jsPsych = initJsPsych({
+var jsPsych = initJsPsych({
   on_trial_start: jatos.addAbortButton,
   on_finish: () => jatos.endStudy(jsPsych.data.get().json())
-}); */
+})
+
+timeline.push(welcome);
+//Fullscreen//
+timeline.push({
+        type: jsPsychFullscreen,
+        fullscreen_mode: true,
+        message: "<p>A kísérlet teljes képernyős módra vált.</p>",
+        button_label: 'Tovább'
+        });
+timeline.push(data_handling); 
+timeline.push(informed_consent);
+timeline.push(demographic_timeline);
+timeline.push(instructions);
+timeline.push(all_practice_blocks);
+timeline.push(panas_timeline);
+timeline.push(vas_timeline);
+timeline.push(all_sessions)
+timeline.push(vas2_timeline);
+timeline.push(goodbye); 
+jatos.onLoad(() => {        
+jsPsych.run(timeline)
+})
+
 
     </script>
 </html>
