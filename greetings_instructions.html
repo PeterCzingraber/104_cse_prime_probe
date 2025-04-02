@@ -10,21 +10,17 @@
         <script src="mytrials.js"></script>
         <script src="jspsych/dist/plugin-html-slider-response.js"></script>
         <script src="jspsych/dist/plugin-survey-likert.js"></script>
-        <script src="vasdislike/vasdislike.js"></script>
-        <script src="panas/panas.js"></script>
         <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
         <link href="styles.css" rel="stylesheet" type="text/css" />
         <script src="jspsych/dist/plugin-survey-multi-choice.js"></script>
         <script src="jspsych/dist/plugin-survey-text.js"></script>
-        <script src="demographic_information.js"></script>
-        <script src="practice_blocks.js"></script>
-        <script src="vasmanipulation/vasmanipulation.js"></script>
         <script src="jatos.js"></script>
+       
     </head>
     <body></body>
     <script> 
-     
-
+      
+ 
         //Debug//
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
@@ -196,7 +192,235 @@
             choices: "ALL_KEYS"
         };
     
+//Adding the external files
+//VAS dislike
 
+var vas_trial = {
+      type: jsPsychHtmlSliderResponse,
+      stimulus: `<p>Kérlek, jelöld be 0 (egyáltalán nem) és 100 (teljes mértékben) között, hogy milyen mértékben tapasztaltál
+       negatív érzéseket a negatív visszajelzések kapcsán!</p>`,
+      labels: ['egyáltalán nem (0)', 'teljes mértékben (100)'],
+      min_label: 'egyáltalán nem',
+      max_label: 'teljes mértékben',
+      min: 0,
+      max: 100,
+      start: 50,
+      step: 1,
+      //slider_width: 500,
+      require_movement: true,
+      button_label: 'Tovább'
+    };
+
+    var vas_timeline = [vas_trial];
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//VAS manipulation
+
+var vas2_trial = {
+        type: jsPsychHtmlSliderResponse,
+        stimulus: `<p>Kérlek, jelöld be 0 (egyáltalán nem) és 100 (teljes mértékben) között, hogy milyen mértékben vetted észre a kísérleti manipulációt!</p>`,
+        labels: ['egyáltalán nem (0)', 'teljes mértékben (100)'],
+        min_label: 'egyáltalán nem',
+        max_label: 'teljes mértékben',
+        min: 0,
+        max: 100,
+        start: 50,
+        step: 1,
+        require_movement: true,
+        button_label: 'Tovább'
+      };
+  
+      var vas2_timeline = [vas2_trial]
+  
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//PANAS
+var likert_scale = [
+      "egyáltalán nem, vagy alig",
+      "kicsit", 
+      "mérsékelten", 
+      "eléggé", 
+      "nagyon"
+    ];
+
+    var questions = [
+      {question: 
+        {prompt: "érdeklődő", name: 'érdeklődés'}
+      },
+      {question: 
+        {prompt: "zaklatott, feldúlt", name: 'zaklatottság'}
+      },
+      {question:
+        {prompt: "kiborult, magamon kívül vagyok", name: 'kiborulás'}
+      },
+      {question:
+        {prompt: "izgatott, feldobott", name: 'izgalom'}
+      },
+      {question:
+        {prompt: "erős", name: 'erő'}
+      },
+      {question:
+        {prompt: "bűntudatom van", name: 'bűntudat'}
+      },
+      {question:
+        {prompt: "rémült", name: 'rémület'}
+      },
+      {question:
+        {prompt: "ellenséges", name: 'ellenségesség'}
+      },
+      {question:
+        {prompt: "lelkes", name: 'lelkesség'}
+
+      },
+      {question:
+        {prompt: "büszke", name: 'büszkeség'}
+      },
+      {question:
+        {prompt: "ingerlékeny", name: 'ingerlékenység'}
+      },
+      {question:
+        {prompt: "éber", name: 'éberség'}
+      },
+      {question:
+        {prompt: "megszégyenült", name: 'szégyen'}
+      },
+      {question:
+        {prompt: "elhivatott", name: 'elhivatottság'}
+      },
+      {question:
+        {prompt: "ideges", name: 'idegesség'}
+      },
+      {question:
+        {prompt: "elszánt, határozott", name: 'elszántság'}
+      }, 
+      {question:
+        {prompt: "figyelmes", name: 'figyelem'}
+      },
+      {question:
+        {prompt: "feszült", name: 'feszültség'}
+      },
+      {question:
+        {prompt: "aktív, élénk", name: 'élénkség'}
+      },
+      {question:
+        {prompt: "félénk", name: 'félelem'}
+    }
+    
+    ];
+
+    var panas_timeline = [];
+
+    var intro = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `<h3>A következő kifejezések érzéseket, állapotokat írnak le.</h3> 
+                <p style="text-align: center; max-width: 800px; margin: auto; font-size: 20px">
+                Jelöld be azt a számot, ami a legjobban kifejezi, hogy jelen pillanatban hogyan érzed magad. Nyomd meg a "Tovább" gombot a kezdéshez.</p>`,
+      choices: ['Tovább']
+    };
+
+
+    panas_timeline.push(intro);
+
+    
+    var trial = {
+        type: jsPsychSurveyLikert,
+        questions: function(){
+         
+          console.log(jsPsych.evaluateTimelineVariable('question')['prompt'])
+          question_object = jsPsych.evaluateTimelineVariable('question')
+          question_object['labels'] = likert_scale
+          question_object['required'] = true
+          myarray = [jsPsych.evaluateTimelineVariable('question')]
+          return myarray
+        },
+        button_label: 'Tovább',
+      };
+
+    var procedure = {
+      timeline: [trial],
+      timeline_variables: questions,
+      randomize_order: true
+    }
+    
+    panas_timeline.push(procedure)
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+//Practice trials
+
+var prime_probe_prac = [
+     {
+         prime: "<span style='font-size: 35px;'>le<br>le<br>le</span>",
+         probe: "<span style='font-size: 35px;'>fel</span>",
+         congruency: "incongruent",
+         correct_response: "j",
+         name: "practice"
+     },
+     {
+         
+         prime: "<span style='font-size: 35px;'>fel<br>fel<br>fel</span>",
+         probe: "<span style='font-size: 35px;'>le</span>",
+         congruency: "incongruent",
+         correct_response: "n",
+         name: "practice"
+
+     },
+     {
+        
+         prime: "<span style='font-size: 35px;'>le<br>le<br>le</span>",
+         probe: "<span style='font-size: 35px;'>le</span>",
+         congruency: "congruent",
+         correct_response: "n",
+         name: "practice"
+        
+     },
+     {
+        
+         prime: "<span style='font-size: 35px;'>fel<br>fel<br>fel</span>",
+         probe: "<span style='font-size: 35px;'>fel</span>",
+         congruency: "congruent",
+         correct_response: "j",
+         name: "practice"
+       
+     },
+     {
+         
+         prime: "<span style='font-size: 35px;'>bal<br>bal<br>bal</span>",
+         probe: "<span style='font-size: 35px;'>jobb</span>",
+         congruency: "incongruent",
+         correct_response: "g",
+         name: "practice"
+     
+     },
+     {
+       
+         prime: "<span style='font-size: 35px;'>jobb<br>jobb<br>jobb</span>",
+         probe: "<span style='font-size: 35px;'>bal</span>",
+         congruency: "incongruent",
+         correct_response: "f",
+         name: "practice"
+       
+     },
+     {
+         
+         prime: "<span style='font-size: 35px;'>bal<br>bal<br>bal</span>",
+         probe: "<span style='font-size: 35px;'>bal</span>",
+         congruency: "congruent",
+         correct_response: "f",
+         name: "practice"
+       
+     },
+     {
+         prime: "<span style='font-size: 35px;'>jobb<br>jobb<br>jobb</span>",
+         probe: "<span style='font-size: 35px;'>jobb</span>",
+         congruency: "congruent",
+         correct_response: "g",
+         name: "practice"
+        
+
+     }
+    ]
 //Practice blocks//
 var prac_instructions = {
         type: jsPsychHtmlKeyboardResponse,
@@ -663,9 +887,53 @@ var goodbye = {
     choices: "ALL_KEYS"
 }
 var jsPsych = initJsPsych({
-  on_trial_start: jatos.addAbortButton,
   on_finish: () => jatos.endStudy(jsPsych.data.get().json())
 })
+
+
+
+//Demographic informations
+
+var education = {
+  type: jsPsychSurveyMultiChoice,
+  questions: [
+    {
+      prompt: "<strong>Mi a legmagasabb iskolai végzettséged?</strong>",
+      name: "education",
+      options: ["Általános iskola", "Szakközépiskola", "Szakgimnázium", "Gimnázium", "Főiskola", "Egyetem, alapképzés", "Egyetem, mesterképzés", "Doktori képzés"],
+      required: true,
+      },
+      {
+          prompt: "<strong>Melyik a nemmel azonosulsz?</strong>",
+          name: "gender",
+          options: ["Férfi", "Nő", "Nem-bináris", "Nem szeretném megosztani"],
+          required: true
+      }
+  ],
+  button_label: "Tovább"
+};
+
+var age_neptun = {
+type: jsPsychSurveyText,
+questions: [
+  {prompt: "Hány éves vagy?", name: "age", required: true},
+  {prompt: "Mi a NEPTUN kódod?", name: "neptun", required: true}
+],
+button_label: "Tovább"
+};
+
+var demographic_timeline = [age_neptun, education]
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
 
 timeline.push(welcome);
 //Fullscreen//
