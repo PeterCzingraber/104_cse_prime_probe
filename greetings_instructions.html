@@ -19,21 +19,31 @@
     </head>
     <body></body>
     <script> 
-      
- 
+     	 var jsPsych = initJsPsych({
+	on_trial_start: function() {
+		console.log(jatos.version)
+	console.log(jatos.urlQueryParameters.petyko)
+	const jatosdebug = jatos.urlQueryParameters.debug
+	console.log(jatosdebug)
+	if(jatosdebug == 1){
+		probe_duration = 1;
+		prime_duration = 1;
+		feedback_duration = 1;
+		blank_duration = 1;
+		probe_stim_duration = 1;
+		money = 200000;
+		debug = 1;
+	}
+	console.log(probe_duration)
+
+	},
+	on_finish: () => jatos.endStudy(jsPsych.data.get().csv())
+})
+
         //Debug//
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
-        const debug = urlParams.get('debug');
-        if(debug == 1){
-            var probe_duration = 10;
-            var prime_duration = 1;
-            var feedback_duration = 1;
-            var blank_duration = 1;
-            var probe_stim_duration = 1;
-            var money = 20000000;
-            
-        }else{
+        
             var probe_duration = 1000;
             var feedback_duration = 700;
             var prime_duration = 133;
@@ -41,7 +51,7 @@
             var probe_stim_duration = 133;
             //Defining money//
             var money = 2000;
-        }
+	    var debug = 0;
 
 
         function sampleItems(array, count = 22) {
@@ -80,10 +90,7 @@
             return result;
         } //this function generates a random string of characters
 
-        var jsPsych = initJsPsych({
-  on_finish: () => jatos.endStudy(jsPsych.data.get().json())
-})
-
+        
         subj_code = makeid(6); //generating a random subject code
 
         console.log(subj_code); //printing the subject code to the console
@@ -445,15 +452,17 @@ var prime_prac_trial = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: jsPsych.timelineVariable('prime'),
     choices: "NO_KEYS",
-    trial_duration: prime_duration,
+	trial_duration: function(){return prime_duration},
 }
 
 var probe_prac_trial = {
     type: jsPsychHtmlKeyboardResponse,            
     stimulus: jsPsych.timelineVariable('probe'),
     choices: ["f", "j", "g", "n"],
-    stimulus_duration: probe_stim_duration,
-    trial_duration: probe_duration,
+	stimulus_duration: function() {
+		console.log("probstim: " + probe_stim_duration)
+		return probe_stim_duration},
+	trial_duration: function() {return probe_duration},
     data: {
         correct_response: jsPsych.timelineVariable('correct_response'),
         task: "probe"
@@ -477,7 +486,7 @@ var feedback_prac_fb = {
         console.log(feedback_text);
     },
         choices: "NO_KEYS",
-        trial_duration: feedback_duration
+	trial_duration: function(){return feedback_duration}
 }
 
 //Fixation//
@@ -502,7 +511,7 @@ var prime_trial = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: jsPsych.timelineVariable('prime'),
     choices: "NO_KEYS",
-    trial_duration: prime_duration,
+	trial_duration: function(){return prime_duration},
     data:{
         task:"prime"
     }
@@ -513,7 +522,7 @@ var blank = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: ' ',
     choices: "NO_KEYS",
-    trial_duration: blank_duration,
+	trial_duration: function(){return blank_duration},
     data:{
         task:"blank"
     }
@@ -523,8 +532,10 @@ var probe_trial = {
     type: jsPsychHtmlKeyboardResponse,            
     stimulus: jsPsych.timelineVariable('probe'),
     choices: ["f", "j", "g", "n"],
-    stimulus_duration: probe_stim_duration,
-    trial_duration: probe_duration,
+	stimulus_duration: function(){
+		console.log("stimdur: " + probe_stim_duration)
+		return probe_stim_duration},
+	trial_duration: function(){return probe_duration},
     data: {
         correct_response: jsPsych.timelineVariable('correct_response'),
         task: "probe",
@@ -545,6 +556,7 @@ var practice_blocks = {
     randomize_order: true,
     repetitions: 2,
     loop_function: function(data) {
+	if(debug == 0){
         console.log(data);
         var correct_trials = data.filter({task: "probe",correct: true}).count();
         console.log(correct_trials);
@@ -560,6 +572,9 @@ var practice_blocks = {
             }
           
         }
+    }else{
+	return false;
+    }
     }
 };
 
@@ -598,7 +613,7 @@ var feedback_p_fb_c = {
             feedback_type: "punishment_congruent"
         },
         choices: "NO_KEYS",
-        trial_duration: feedback_duration,
+					    trial_duration: function(){return feedback_duration},
 };
 
 // Feedback P-FB-I//
@@ -631,7 +646,7 @@ var feedback_p_fb_i = {
         feedback_type: "punishment_incongruent"
             },          
     choices: "NO_KEYS",
-    trial_duration: feedback_duration
+						trial_duration: function(){return feedback_duration}
 };
 
 //Feedback N-FB-C//
@@ -658,7 +673,7 @@ var feedback_n_fb_c = {
             feedback_type: "no_punishment_congruent"
         },
         choices: "NO_KEYS",
-        trial_duration: feedback_duration
+				  trial_duration: function(){return feedback_duration}
 };
 
 //Feedback N-FB-I//
@@ -685,7 +700,7 @@ var feedback_n_fb_i = {
             feedback_type: "no_punishment_incongruent"
         },
         choices: "NO_KEYS",
-        trial_duration: feedback_duration
+				  trial_duration: function(){return feedback_duration}
     };
 
 //Feedback RP-FB-R//
@@ -714,7 +729,7 @@ var feedback_rp_fb_r = {
         feedback_type: "random_punishment_random"
     },
         choices: "NO_KEYS",
-        trial_duration: feedback_duration
+						trial_duration: function(){return feedback_duration}
 };
 
 //Trial sequence//
@@ -950,9 +965,12 @@ timeline.push(vas_timeline);
 timeline.push(all_sessions)
 timeline.push(vas2_timeline);
 timeline.push(goodbye); 
-jatos.onLoad(() => {        
-jsPsych.run(timeline)
-})
+
+jatos.onLoad(() => {
+		jsPsych.run(timeline)
+}) 
+
+
 
 
     </script>
