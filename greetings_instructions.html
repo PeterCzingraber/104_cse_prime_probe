@@ -14,12 +14,12 @@
         <link href="styles.css" rel="stylesheet" type="text/css" />
         <script src="jspsych/dist/plugin-survey-multi-choice.js"></script>
         <script src="jspsych/dist/plugin-survey-text.js"></script>
-        
+   	<script src="jatos.js"></script>
+    
        
     </head>
     <body></body>
     <script> 
-<<<<<<< Updated upstream
      	 var jsPsych = initJsPsych({
 	on_trial_start: function() {
 		console.log(jatos.version)
@@ -41,10 +41,6 @@
 	on_finish: () => jatos.endStudy(jsPsych.data.get().csv())
 })
 
-=======
-      
- //<script src="jatos.js"><//script>
->>>>>>> Stashed changes
         //Debug//
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
@@ -95,24 +91,11 @@
             return result;
         } //this function generates a random string of characters
 
-<<<<<<< Updated upstream
-        
-=======
-        //var jsPsych = initJsPsych({
-  //on_finish: () => jatos.endStudy(jsPsych.data.get().json())
-//})
 
 var jsPsych = initJsPsych({
- 
- on_finish: function() {
+	on_finish: () => jatos.endStudy(jsPsych.data.get().json())
+})
 
-   jsPsych.data.displayData();
-
- }
-
-});
-
->>>>>>> Stashed changes
         subj_code = makeid(6); //generating a random subject code
 
         console.log(subj_code); //printing the subject code to the console
@@ -481,18 +464,12 @@ var prime_prac_trial = {
 var probe_prac_trial = {
     type: jsPsychHtmlKeyboardResponse,            
     stimulus: jsPsych.timelineVariable('probe'),
-<<<<<<< Updated upstream
-    choices: ["f", "j", "g", "n"],
+    choices: ["a", "i", "d", "n"],
 	stimulus_duration: function() {
 		console.log("probstim: " + probe_stim_duration)
 		return probe_stim_duration},
 	trial_duration: function() {return probe_duration},
-=======
-    choices: ["a", "i", "d", "n"],
-    stimulus_duration: probe_stim_duration,
-    trial_duration: probe_duration,
->>>>>>> Stashed changes
-    data: {
+   data: {
         correct_response: jsPsych.timelineVariable('correct_response'),
         task: "probe"
     },
@@ -560,18 +537,12 @@ var blank = {
 var probe_trial = {
     type: jsPsychHtmlKeyboardResponse,            
     stimulus: jsPsych.timelineVariable('probe'),
-<<<<<<< Updated upstream
-    choices: ["f", "j", "g", "n"],
+    choices: ["a", "i", "d", "n"],
 	stimulus_duration: function(){
 		console.log("stimdur: " + probe_stim_duration)
 		return probe_stim_duration},
 	trial_duration: function(){return probe_duration},
-=======
-    choices: ["a", "i", "d", "n"],
-    stimulus_duration: probe_stim_duration,
-    trial_duration: probe_duration,
->>>>>>> Stashed changes
-    data: {
+   data: {
         correct_response: jsPsych.timelineVariable('correct_response'),
         task: "probe",
         congruency: jsPsych.timelineVariable('congruency'),
@@ -1000,19 +971,9 @@ timeline.push(vas_timeline);
 timeline.push(all_sessions)
 timeline.push(vas2_timeline);
 timeline.push(goodbye); 
-<<<<<<< Updated upstream
-
 jatos.onLoad(() => {
 		jsPsych.run(timeline)
 }) 
-
-
-=======
-//jatos.onLoad(() => {        
-jsPsych.run(timeline)
-//})
->>>>>>> Stashed changes
-
 
     </script>
 </html>
