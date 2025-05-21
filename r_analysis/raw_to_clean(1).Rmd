@@ -1,0 +1,285 @@
+---
+title: "raw_to_clean"
+output: html_document
+date: "2025-04-23"
+---
+
+## Control under pressure — the influence of aversive motivation on adaptive control
+
+## Raw to clean
+
+## Loading packages
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(stringr)
+```
+
+## Loading raw data
+
+```{r}
+raw_data <- read.csv("pilotresults.csv")
+```
+
+## flagging previous events in probe stimuli before filtering
+```{r}
+raw_data = raw_data %>% 
+  mutate(feedback = case_when(grepl(">✘</div>",stimulus) ~ "visual_punishment", # flagging different feedback events in new variable
+                                grepl("&#11036", stimulus) ~ "neutral",
+                                grepl(">✘<br>5 garast veszítettél</div>",stimulus) ~ "monetary_loss",
+                                grepl("✔",stimulus) ~ "tickmark"
+                                ),
+         prev_feedback = ifelse(task=="probe", lag(feedback,n=4),""), ## Flagging previous feedback in probe trial
+         prev_loss = ifelse(prev_feedback == "monetary_loss", 1,0), ## Flagging if monetary loss happened before this probe 
+         prev_correct = lag(correct,n=5), ## flagging previous correct
+         prev_congruency = lag(congruency, n=5), ## creating previous congruency variable
+         block_feedback_type = lead(feedback_type)) ## moving feedback type data to probe variable
+
+raw_data = raw_data %>% 
+  mutate(correct = if_else(correct == "true", 1, 0))
+raw_data = raw_data %>% 
+  mutate(prev_correct = if_else(prev_correct == "true", 1, 0))
+```
+
+#Cleaning/filtering data
+```{r}
+#Filtering columns
+processed_data = raw_data %>% 
+  select(-trial_type,
+         -trial_index,
+         -plugin_version,
+         -success,
+         -question_order,
+         -slider_start,
+         -stimulus,
+         -time_elapsed)
+
+processed_data = raw_data %>% # Keeping only probe rows
+  filter(task=="probe")
+
+processed_data = processed_data %>% 
+  filter(name != "practice")
+
+processed_data =processed_data %>% ## filtering out first trials here 
+  filter(!is.na(prev_feedback))
+```
+
+##Accuracy cut off and exclusion
+```{r}
+accuracy_df = processed_data %>% 
+  group_by(subj_code) %>% 
+  summarise(all_accuracy = mean(correct))
+
+processed_data = processed_data %>% 
+  left_join(accuracy_df, by = "subj_code")%>% 
+  filter(all_accuracy > 0.60)
+```
+
+##Time cut off
+```{r}
+time_df = processed_data %>% 
+  group_by(subj_code) %>% 
+  summarise(full_time = max(as.numeric(time_elapsed))) %>% 
+  mutate(duration_min = full_time / 1000 / 60)
+
+processed_data = processed_data %>% 
+  left_join(time_df, by = "subj_code") %>% 
+  filter(duration_min < 120)
+```
+
+##Demography data
+```{r}
+demography_data = raw_data %>%
+  filter(trial_type %in% c("survey-text", "survey-multi-choice"))
+    
+demography_data = demography_data %>%
+  select(response, subj_code)
+
+demography_data = demography_data %>%
+  mutate(age = str_extract(response, '"age":"\\d+"') %>%
+      str_extract("\\d+") %>%
+      as.numeric(),
+    
+    education = str_extract(response, '"education":"[^"]+"') %>%
+      str_remove_all('"education":"') %>%
+      str_remove('"'),
+    
+    gender = str_extract(response, '"gender":"[^"]+"') %>%
+      str_remove_all('"gender":"') %>%
+      str_remove('"'))
+
+demography_data = demography_data %>%
+  select(-response)
+
+demography_data = demography_data %>%
+  group_by(subj_code) %>%
+  summarize(
+    age = coalesce(age[1], age[2]),
+    education = coalesce(education[1], education[2]),
+    gender = coalesce(gender[1], gender[2]))
+```
+
+## keeping only correct responses for rt analysis. Setting rt as numeric
+```{r}
+processed_data = processed_data %>% 
+  filter(correct == "1",
+         prev_correct == "1")
+processed_data = processed_data %>% 
+  mutate(rt = as.numeric(rt))
+```
+
+## example plot for cse
+```{r}
+cseplot = cse_summary_table %>% 
+  ggplot()+
+  aes(x=prev_congruency, y=mean_rt, color=congruency, group=congruency)+
+  geom_point(size=1)+
+  geom_path(size=1)+
+  geom_errorbar(aes(ymin=mean_rt-se_rt, ymax=mean_rt+se_rt), width=.2, size=1)+
+  scale_color_brewer(palette = "Pastel2")+
+  papaja::theme_apa()
+
+cseplot
+```
+#Cleaning up PANAS and VAS data
+##Flagging the condition of PANAS
+```{r}
+raw_data = raw_data %>% 
+  mutate(panas_condition = ifelse(trial_type == "survey-likert",case_when(lag(name, 4) == "practice" ~ "first_panas",
+    lag(feedback_type, 4)!="NA" & lag(trial_type)!="survey-likert" ~ paste0("panas_",lag(feedback_type,4))), ""))
+start_rows = which(raw_data$panas_condition != "") 
+for (start_row in start_rows) {                   
+  end_row = min(start_row + 19)                   
+  value_to_fill = raw_data$panas_condition[start_row] 
+  raw_data$panas_condition [start_row:end_row] = value_to_fill
+  }
+```
+
+
+## PANAS data
+```{r}
+panas_data = raw_data %>% 
+  filter(trial_type == "survey-likert")
+
+panas_data = panas_data %>%
+  select(-rt,
+         -stimulus,
+         -trial_index,
+         -plugin_version,
+         -time_elapsed,
+         -success,
+         -question_order,
+         -task,
+         -correct_response,
+         -congruency,
+         -name,
+         -correct,
+         -slider_start,
+         -feedback_type,
+         -trial_type)
+
+panas_data = panas_data %>%
+  mutate(item = str_extract(response, '"(.*?)"') %>% str_remove_all('"'),
+         value = str_extract(response, ':\\d+') %>% str_remove(':') %>% as.numeric()) %>%
+  select(item, value, subj_code, panas_condition)
+```
+
+
+##Flagging VAS condition
+```{r}
+raw_data = raw_data %>% 
+  mutate(vas_condition = case_when(trial_type == "html-slider-response" &
+    !is.na(lag(panas_condition, 1)) & lag(trial_type)!="html-slider-response" ~ paste0("vas_",lag(panas_condition,1)))) %>%
+  mutate(vas_condition = str_remove(vas_condition, "_panas"))
+```
+
+##VAS dislike 
+```{r}
+dislike_data = raw_data %>% 
+  filter(trial_type == "html-slider-response",
+          stimulus != "<p>Kérlek, jelöld be 0 (egyáltalán nem) és 100 (teljes mértékben) között, hogy milyen mértékben vettél észre szabályosságot a visszajelzések bemutatásában!</p>") %>%
+  select(response,subj_code, vas_condition)
+```
+
+##VAS manipulation check
+```{r}
+manipulation_data = raw_data %>% 
+  filter(trial_type == "html-slider-response",
+          stimulus == "<p>Kérlek, jelöld be 0 (egyáltalán nem) és 100 (teljes mértékben) között, hogy milyen mértékben vettél észre szabályosságot a visszajelzések bemutatásában!</p>") %>%
+  select(response, slider_start,subj_code)
+```
+
+
+
+
+#Statistical analysis
+
+##Basic analysis
+```{r}
+dstats = function(x, na.omit=FALSE){
+  if (na.omit)
+  x = x[!is.na(x)]
+  min = min(x)
+  max = max(x)
+  m = mean(x)
+  median = median(x)
+  n = length(x)
+  stds = sd(x)
+  skew = 3*(m-median)/stds
+  kurt = (length(x) * sum((x - mean(x))^4)) / (sum((x - mean(x))^2)^2) - 3
+
+  
+#Return all calculated values to vectors
+  return(c(
+    min = min,
+    max = max,
+    mean = m,
+    median = median,
+    sd = stds,
+    skewness = skew,
+    kurtosis = kurt
+  ))
+}
+```
+
+```{r}
+str(processed_data$rt)
+```
+
+#Proper data format for CE visualization
+```{r}
+mean_rt_df = processed_data %>% 
+  group_by(subj_code) %>% 
+  summarise(mean_RT_congruent = mean(rt[congruency == "congruent"], na.rm = TRUE),
+            mean_RT_incongruent = mean(rt[congruency == "incongruent"], na.rm = TRUE))
+
+ce_rt = processed_data %>% 
+  group_by(subj_code, congruency) %>% 
+  summarise(mean_RT = mean(rt, na.rm = TRUE))
+```
+
+#Descriptive statistics on aggregated RT values
+```{r}
+myvars = c ("mean_RT_congruent", "mean_RT_incongruent")
+sapply(mean_rt_df[myvars], dstats)
+```
+
+#Calculating the CSE 
+```{r}
+cse_summary_table = processed_data %>% 
+  group_by(prev_congruency, congruency, block_feedback_type) %>% 
+  summarize(N = n(),
+            mean_rt = mean(as.numeric(rt), na.rm = T),
+            sd_rt = sd(rt, na.rm = T),
+            se_rt = sd_rt/sqrt(N))
+```
+
+```{r}
+cse_summary_table = cse_summary_table %>%
+  mutate(contingency = str_remove(block_feedback_type, "(no_punishment_)|(punishment_)|(random_punishment)")) %>% 
+  mutate(condition = str_remove(block_feedback_type, "(_congruent)|(_incongruent)|(_random)"))
+```
+
+
+```{r}
