@@ -14,6 +14,9 @@ date: "2025-04-23"
 library(tidyverse)
 library(dplyr)
 library(stringr)
+library(lme4)
+library(lmerTest)
+library(ggplot2)
 ```
 
 ## Loading raw data
@@ -211,8 +214,6 @@ manipulation_data = raw_data %>%
 ```
 
 
-
-
 #Statistical analysis
 
 ##Basic analysis
@@ -273,13 +274,23 @@ cse_summary_table = processed_data %>%
             mean_rt = mean(as.numeric(rt), na.rm = T),
             sd_rt = sd(rt, na.rm = T),
             se_rt = sd_rt/sqrt(N))
+
+processed_data = processed_data %>% 
+  mutate(cong = ifelse(congruency == "congruent", 0.5,-0.5),
+         prev_cong = ifelse(prev_congruency == "congruent", 0.5, -0.5))
 ```
 
 ```{r}
-cse_summary_table = cse_summary_table %>%
-  mutate(contingency = str_remove(block_feedback_type, "(no_punishment_)|(punishment_)|(random_punishment)")) %>% 
-  mutate(condition = str_remove(block_feedback_type, "(_congruent)|(_incongruent)|(_random)"))
+processed_data = processed_data %>%
+  mutate(feedback_contingency = str_remove(block_feedback_type, "(no_punishment_)|(punishment_)|(random_punishment)")) %>% 
+  mutate(feedback_condition = str_remove(block_feedback_type, "(_congruent)|(_incongruent)|(_random)"))
 ```
 
-
+#Linear Mixed Effect Model
 ```{r}
+lmodel = lmer(rt ~ cong*prev_cong*feedback_contingency*feedback_condition +
+                (1 + cong|subj_code), processed_data,
+              control = lmerControl(optimizer = "bobyga", optCtrl = list(maxfun = 2e5)))
+summary(lmodel)
+```
+
