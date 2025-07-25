@@ -1,9 +1,9 @@
-#Replication of "The selective use of punishments on congruent versus incongruent trials in the Stroop task" (Yang et al., 2022)
+# Replication of "The selective use of punishments on congruent versus incongruent trials in the Stroop task" (Yang et al., 2022)
 This repository contains the full experimental code used in a replication study conducted by the Metascience Lab at ELTE (https://ppk.elte.hu/en/metascience), led by Peter Czingraber, Natalja Dokic, Julianna Harangozo, and Miklos Bognar.
 
 ---
 
-##About the experimental code
+## About the experimental code
 The experiment is a web-based task built using HTML, JavaScript, and the jsPsych library. It is compatible with JATOS for online deployment and data collection.
 To run the experiment locally:
 
@@ -13,7 +13,7 @@ To run the experiment locally:
 
 ---
 
-##About the Task
+## About the Task
 We implemented a prime-probe task (Weissman et al., 2014), designed to avoid common confounds in Stroop tasks such as feature integration and contingency learning.
 
 The experimental conditions consisted of the following:
@@ -39,6 +39,6 @@ Measurements:
 
 ---
 
-##More Information
+## More Information
 
-For a full description of the replication project and its methodology, please visit the OSF repository:(https://doi.org/10.17605/OSF.IO/UHAFE)
+For a full description of the replication project and its methodology, please visit the OSF repository: (https://doi.org/10.17605/OSF.IO/UHAFE)
