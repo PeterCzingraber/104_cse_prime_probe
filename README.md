@@ -1,5 +1,5 @@
 # Replication of "The selective use of punishments on congruent versus incongruent trials in the Stroop task" (Yang et al., 2022)
-This repository contains the full experimental code used in a replication study conducted by the Metascience Lab at ELTE (https://ppk.elte.hu/en/metascience), led by Peter Czingraber, Natalija Dokic, Julianna Harangozo, and Miklos Bognar.
+This repository contains the full experimental code used in a replication study conducted by the Metascience Lab at ELTE (https://ppk.elte.hu/en/metascience), led by Pítör Czingraber, Natalija Dokic, Julianna Harangozo, and Miklos Bognar.
 
 ---
 
